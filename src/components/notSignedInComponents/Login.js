@@ -1,0 +1,106 @@
+import { Form, Button, Alert } from "react-bootstrap";
+import "../../style/Form.scss";
+import { motion } from "framer-motion";
+import axios from "axios";
+import { useState, useContext, useEffect } from "react";
+import { useHistory, Link } from "react-router-dom";
+import UserContext from "../../user/UserContext.js";
+
+function Login({ pageTransitions }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { setUser } = useContext(UserContext);
+
+  const redirect = useHistory();
+
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+    };
+  });
+
+  const login = (event) => {
+    event.preventDefault();
+    setLoading(true);
+    axios
+      .post("http://localhost:8080/users/login", { email, password })
+      .then((response) => {
+        if (response.data.err) {
+          setError(response.data.err);
+          setLoading(false);
+        } else {
+          setUser(response.data.user);
+          localStorage.setItem("token", response.data.token);
+          redirect.push("/");
+        }
+      });
+  };
+
+  return (
+    <motion.div
+      style={{ flexDirection: "column", maxWidth: "400px" }}
+      initial="out"
+      animate="in"
+      exit="out"
+      variants={pageTransitions.pageVariants}
+      transition={pageTransitions.pageTransition}
+    >
+      <h1 style={{ margin: "40px 0" }}>Login</h1>
+      <Form onSubmit={(event) => login(event)}>
+        <Form.Group controlId="formLoginEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Enter email"
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formLoginPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            onChange={(event) => setPassword(event.target.value)}
+            required
+          />
+        </Form.Group>
+        {/* <Form.Group controlId="formBasicCheckbox">
+          <Form.Check type="checkbox" label="Check me out" />
+        </Form.Group> */}
+        <Button variant="outline-info" type="submit" block disabled={loading}>
+          {loading ? <i className="fa fa-spinner fa-spin" /> : "Login"}
+        </Button>
+
+        {error && (
+          <motion.div
+            initial="out"
+            animate="in"
+            exit="out"
+            variants={pageTransitions.pageVariants}
+            transition={pageTransitions.pageTransition}
+          >
+            <Alert style={{ marginTop: "20px" }} variant="danger">
+              {error}
+            </Alert>
+          </motion.div>
+        )}
+        <Link className="link" to="/register">
+          <i className="fa fa-address-card" /> If you don't have an account,
+          click here to create one
+        </Link>
+        <Link className="link" to="/reset_password">
+          <i className="fa fa-unlock-alt" /> If you forgot your password click
+          here!
+        </Link>
+      </Form>
+    </motion.div>
+  );
+}
+
+export default Login;

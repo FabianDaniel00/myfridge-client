@@ -1,0 +1,29 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  font-family: "Brush Script MT", cursive;
+  transition: 1s;
+}
+
+.flex-horizontal {
+  display: flex;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  transition: 1s;
+  padding: 10px 10px 30px 10px;
+  // background-color: rgb(49, 49, 49);
+  // color: #fff;
+}
+
+@media only screen and (max-width: 480px) {
+  .content {
+    margin-left: -80px;
+  }
+  .App {
+    padding-top: 56px;
+  }
+}
