@@ -5,11 +5,7 @@
   top: 0;
   transition: 1s;
   position: sticky;
-}
-
-.small-height {
-  height: calc(100vh - 100px);
-  transition: 0.3s;
+  z-index: 100;
 }
 
 .opacity {
@@ -35,6 +31,27 @@ a {
 
 .sidebar-footer div {
   padding: 20px 5px;
+}
+
+.user-info {
+  transition: 0.5s;
+  color: #d1d1d1;
+  margin: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.monogram-sidebar {
+  border-radius: 50%;
+  background-color: #32a899;
+  font-size: 13px;
+  padding: 5px 6px;
+  display: inline-block;
+  color: #fff;
+  margin-top: 10px;
+  border: 1px solid #fff;
+  transition: 0.5s;
 }
 
 @media only screen and (max-width: 480px) {

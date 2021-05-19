@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Toast, Collapse } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { useHistory, Link } from "react-router-dom";
 import axios from "axios";
@@ -7,7 +7,7 @@ import "../../style/Form.scss";
 
 export default function RegisterVerification({ pageTransitions }) {
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
 
@@ -20,7 +20,7 @@ export default function RegisterVerification({ pageTransitions }) {
     axios
       .post("http://localhost:8080/users/register_verification", {
         email,
-        code,
+        verificationCode,
       })
       .then((response) => {
         if (response.data.err) {
@@ -61,7 +61,7 @@ export default function RegisterVerification({ pageTransitions }) {
           <Form.Control
             type="text"
             placeholder="Verification Code"
-            onChange={(event) => setCode(event.target.value)}
+            onChange={(event) => setVerificationCode(event.target.value)}
             required
           />
         </Form.Group>
@@ -70,19 +70,31 @@ export default function RegisterVerification({ pageTransitions }) {
           {loading ? <i className="fa fa-spinner fa-spin" /> : "Verify"}
         </Button>
 
-        {error && (
-          <motion.div
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransitions.pageVariants}
-            transition={pageTransitions.pageTransition}
-          >
-            <Alert style={{ marginTop: "20px" }} variant="danger">
-              {error}
-            </Alert>
-          </motion.div>
-        )}
+        <Collapse in={error}>
+          <div>
+            <Toast
+              onClose={() => {
+                setError("");
+              }}
+              show={error}
+              delay={5000}
+              className="toast"
+              autohide
+            >
+              <Toast.Header>
+                {/* <img
+                      src="holder.js/20x20?text=%20"
+                      className="rounded mr-2"
+                      alt=""
+                    /> */}
+                <strong className="mr-auto">Error!</strong>
+              </Toast.Header>
+              <Toast.Body>
+                <Alert variant="danger">{error}</Alert>
+              </Toast.Body>
+            </Toast>
+          </div>
+        </Collapse>
 
         <Link className="link" to="/send_code_again">
           If you don't get a verification code click here!

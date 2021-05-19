@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./style/App.scss";
-import { Route, Switch, Redirect, useLocation } from "react-router-dom";
+import { Route, Switch, Redirect, useLocation, Link } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Sidebar from "./components/Sidebar.js";
 import NavBar from "./components/NavBar.js";
@@ -14,6 +14,8 @@ import CarouselComponent from "./components/CarouselComponent.js";
 import UserContext from "./user/UserContext.js";
 import AgainRegisterVerification from "./components/notSignedInComponents/AgainRegisterVerification.js";
 import PasswordReset from "./components/notSignedInComponents/PasswordReset.js";
+import RecipePage from "./components/RecipePage.js";
+import AddRecipe from "./components/signedInComponents/AddRecipe.js";
 
 function App() {
   const [user, setUser] = useState("");
@@ -24,6 +26,7 @@ function App() {
 
   useEffect(() => {
     userIsLoggedIn();
+    document.getElementById("year").innerHTML = new Date().getFullYear();
   }, []);
 
   const userIsLoggedIn = () => {
@@ -84,8 +87,17 @@ function App() {
               <AnimatePresence exitBeforeEnter>
                 <Switch location={location} key={location.pathname}>
                   <Route exact path="/">
+                    <Redirect exact to="/recipes/1" />
+                  </Route>
+
+                  <Route exact path="/recipes">
+                    <Redirect exact to="/recipes/1" />
+                  </Route>
+
+                  <Route exact path="/recipes/:page">
                     <Home pageTransitions={pageTransitions} />
                   </Route>
+
                   <Route path="/login">
                     {user ? (
                       <Redirect exact to="/" />
@@ -93,6 +105,7 @@ function App() {
                       <Login pageTransitions={pageTransitions} />
                     )}
                   </Route>
+
                   <Route path="/register">
                     {user ? (
                       <Redirect exact to="/" />
@@ -100,6 +113,7 @@ function App() {
                       <Register pageTransitions={pageTransitions} />
                     )}
                   </Route>
+
                   <Route path="/register_verification">
                     {user ? (
                       <Redirect exact to="/" />
@@ -107,6 +121,7 @@ function App() {
                       <RegisterVerification pageTransitions={pageTransitions} />
                     )}
                   </Route>
+
                   <Route path="/send_code_again">
                     {user ? (
                       <Redirect exact to="/" />
@@ -116,6 +131,7 @@ function App() {
                       />
                     )}
                   </Route>
+
                   <Route path="/reset_password">
                     {user ? (
                       <Redirect exact to="/" />
@@ -123,6 +139,19 @@ function App() {
                       <PasswordReset pageTransitions={pageTransitions} />
                     )}
                   </Route>
+
+                  <Route path="/recipe/:r_id">
+                    <RecipePage pageTransitions={pageTransitions} />
+                  </Route>
+
+                  <Route path="/add_recipe">
+                    {user ? (
+                      <AddRecipe pageTransitions={pageTransitions} />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+
                   <Route path="*">
                     <NoMatch pageTransitions={pageTransitions} />
                   </Route>
@@ -132,6 +161,39 @@ function App() {
           </div>
         </UserContext.Provider>
       )}
+
+      <div className="footer-basic">
+        <footer>
+          <div className="social">
+            <a href="https://www.instagram.com/fabian_daniel00/" target="blank">
+              <i className="fab fa-instagram instagram" />
+            </a>
+            <abbr title="fabian_daniel09" className="snapchat-div">
+              <i className="fab fa-snapchat-ghost snapchat" />
+            </abbr>
+            <a
+              href="https://www.facebook.com/daniel.fabian.334/"
+              target="blank"
+            >
+              <i className="fab fa-facebook facebook" />
+            </a>
+          </div>
+          <ul className="list-inline">
+            <li className="list-inline-item">
+              <Link to="/recipes/1">Home</Link>
+            </li>
+            <li className="list-inline-item">
+              <Link to="/services">Services</Link>
+            </li>
+            <li className="list-inline-item">
+              <Link to="/about">About</Link>
+            </li>
+          </ul>
+          <p className="copyright">
+            Copyright Ⓒ <span id="year"></span> myFridge. All rights reserved
+          </p>
+        </footer>
+      </div>
     </div>
   );
 }

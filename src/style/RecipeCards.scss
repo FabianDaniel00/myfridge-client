@@ -1,0 +1,16 @@
+.recipe-link:hover {
+  color: #212529;
+  text-decoration: none;
+}
+
+.recipe-card {
+  transition: 0.3s;
+  min-width: 200px;
+  position: relative;
+  padding-bottom: 48px;
+  min-width: 200px;
+  &:hover {
+    transform: scale(1.05);
+    z-index: 1;
+  }
+}

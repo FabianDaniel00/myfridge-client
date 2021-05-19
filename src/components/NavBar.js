@@ -50,23 +50,35 @@ const NavBar = () => {
           <NavLink
             onClick={() => setNavExpanded(false)}
             className="top-nav-link"
-            to="/"
+            to="/recipes/1"
           >
             myFridge
           </NavLink>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        {user && <div className="monogram-navbar">{user.u_monogram}</div>}
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
             <NavLink
               onClick={() => setNavExpanded(false)}
               className="nav-link"
-              to="/"
+              to="/recipes/1"
             >
               <i className="fa fa-home" /> Home
             </NavLink>
             {user ? (
-              <Logout navbar={true} />
+              <>
+                <NavLink
+                  onClick={() => setNavExpanded(false)}
+                  className="nav-link"
+                  to="/add_recipe"
+                >
+                  <i className="fas fa-plus" /> Add Recipe
+                </NavLink>
+                <div onClick={() => setNavExpanded(false)}>
+                  <Logout navbar={true} />
+                </div>
+              </>
             ) : (
               <>
                 <NavLink

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Toast, Alert, Collapse } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -69,37 +69,44 @@ export default function AgainRegisterVerification({ pageTransitions }) {
           {loading ? <i className="fa fa-spinner fa-spin" /> : "Send"}
         </Button>
 
-        {error ? (
-          <motion.div
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransitions.pageVariants}
-            transition={pageTransitions.pageTransition}
-          >
-            <Alert style={{ marginTop: "20px" }} variant="danger">
-              {error}
-            </Alert>
-          </motion.div>
-        ) : (
-          message && (
-            <motion.div
-              initial="out"
-              animate="in"
-              exit="out"
-              variants={pageTransitions.pageVariants}
-              transition={pageTransitions.pageTransition}
+        <Collapse in={error || message}>
+          <div>
+            <Toast
+              onClose={() => {
+                setError("");
+                setMessage("");
+              }}
+              show={error || message}
+              delay={5000}
+              className="toast"
+              autohide
             >
-              <Alert style={{ marginTop: "20px" }} variant="success">
-                {message}
-                <br />
-                <Link to="/register_verification">
-                  Click here to verificate.
-                </Link>
-              </Alert>
-            </motion.div>
-          )
-        )}
+              <Toast.Header>
+                {/* <img
+                      src="holder.js/20x20?text=%20"
+                      className="rounded mr-2"
+                      alt=""
+                    /> */}
+                <strong className="mr-auto">
+                  {error ? "Error!" : message ? "Success" : null}
+                </strong>
+              </Toast.Header>
+              <Toast.Body>
+                {error ? (
+                  <Alert variant="danger">{error}</Alert>
+                ) : message ? (
+                  <Alert variant="success">
+                    {message}
+                    <br />
+                    <Link to="/register_verification">
+                      Click here to verificate.
+                    </Link>
+                  </Alert>
+                ) : null}
+              </Toast.Body>
+            </Toast>
+          </div>
+        </Collapse>
       </Form>
     </motion.div>
   );

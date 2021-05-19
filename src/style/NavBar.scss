@@ -22,6 +22,19 @@
   }
 }
 
+.monogram-navbar {
+  border-radius: 50%;
+  background-color: #32a899;
+  font-size: 15px;
+  padding: 5px 6px;
+  display: inline-block;
+  color: #fff;
+  border: 1px solid #fff;
+  position: absolute;
+  right: 80px;
+  top: 11px;
+}
+
 @media only screen and (max-width: 480px) {
   .navbar {
     transform: translateY(0);

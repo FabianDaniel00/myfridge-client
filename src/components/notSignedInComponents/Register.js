@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import "../../style/Form.scss";
 import axios from "axios";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Toast, Collapse } from "react-bootstrap";
 import { motion } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Link } from "react-router-dom";
@@ -162,37 +162,44 @@ function Register({ pageTransitions }) {
           {loading ? <i className="fa fa-spinner fa-spin" /> : "Register"}
         </Button>
 
-        {error ? (
-          <motion.div
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransitions.pageVariants}
-            transition={pageTransitions.pageTransition}
-          >
-            <Alert style={{ marginTop: "20px" }} variant="danger">
-              {error}
-            </Alert>
-          </motion.div>
-        ) : (
-          message && (
-            <motion.div
-              initial="out"
-              animate="in"
-              exit="out"
-              variants={pageTransitions.pageVariants}
-              transition={pageTransitions.pageTransition}
+        <Collapse in={error || message}>
+          <div>
+            <Toast
+              onClose={() => {
+                setError("");
+                setMessage("");
+              }}
+              show={error || message}
+              delay={5000}
+              className="toast"
+              autohide
             >
-              <Alert style={{ marginTop: "20px" }} variant="success">
-                {message}
-                <br />
-                <Link to="/register_verification">
-                  Click here to verificate.
-                </Link>
-              </Alert>
-            </motion.div>
-          )
-        )}
+              <Toast.Header>
+                {/* <img
+                      src="holder.js/20x20?text=%20"
+                      className="rounded mr-2"
+                      alt=""
+                    /> */}
+                <strong className="mr-auto">
+                  {error ? "error!" : message ? "Success" : null}
+                </strong>
+              </Toast.Header>
+              <Toast.Body>
+                {error ? (
+                  <Alert variant="danger">{error}</Alert>
+                ) : message ? (
+                  <Alert variant="success">
+                    {message}
+                    <br />
+                    <Link to="/register_verification">
+                      Click here to verificate.
+                    </Link>
+                  </Alert>
+                ) : null}
+              </Toast.Body>
+            </Toast>
+          </div>
+        </Collapse>
 
         <Link className="link" to="/login">
           <i className="fa fa-sign-in-alt" /> If you have an account login here!

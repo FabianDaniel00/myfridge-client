@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Collapse, Toast } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -104,33 +104,38 @@ export default function PasswordReset({ pageTransitions }) {
           {sendLoading ? <i className="fa fa-spinner fa-spin" /> : "Send"}
         </Button>
 
-        {sendError ? (
-          <motion.div
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransitions.pageVariants}
-            transition={pageTransitions.pageTransition}
-          >
-            <Alert style={{ marginTop: "20px" }} variant="danger">
-              {sendError}
-            </Alert>
-          </motion.div>
-        ) : (
-          sendMessage && (
-            <motion.div
-              initial="out"
-              animate="in"
-              exit="out"
-              variants={pageTransitions.pageVariants}
-              transition={pageTransitions.pageTransition}
+        <Collapse in={sendError || sendMessage}>
+          <div>
+            <Toast
+              onClose={() => {
+                setSendError("");
+                setSendMessage("");
+              }}
+              show={sendError || sendMessage}
+              delay={5000}
+              className="toast"
+              autohide
             >
-              <Alert style={{ marginTop: "20px" }} variant="success">
-                {sendMessage}
-              </Alert>
-            </motion.div>
-          )
-        )}
+              <Toast.Header>
+                {/* <img
+                      src="holder.js/20x20?text=%20"
+                      className="rounded mr-2"
+                      alt=""
+                    /> */}
+                <strong className="mr-auto">
+                  {sendError ? "sendError!" : sendMessage ? "Success" : null}
+                </strong>
+              </Toast.Header>
+              <Toast.Body>
+                {sendError ? (
+                  <Alert variant="danger">{sendError}</Alert>
+                ) : sendMessage ? (
+                  <Alert variant="success">{sendMessage}</Alert>
+                ) : null}
+              </Toast.Body>
+            </Toast>
+          </div>
+        </Collapse>
       </Form>
 
       <hr style={{ borderTop: "5px dashed #17a2b8" }} />
@@ -187,7 +192,50 @@ export default function PasswordReset({ pageTransitions }) {
           {confirmLoading ? <i className="fa fa-spinner fa-spin" /> : "Confirm"}
         </Button>
 
-        {confirmError ? (
+        <Collapse in={confirmError || confirmMessage}>
+          <div>
+            <Toast
+              onClose={() => {
+                setConfirmError("");
+                setConfirmMessage("");
+              }}
+              show={confirmError || confirmMessage}
+              delay={5000}
+              className="toast"
+              autohide
+            >
+              <Toast.Header>
+                {/* <img
+                      src="holder.js/20x20?text=%20"
+                      className="rounded mr-2"
+                      alt=""
+                    /> */}
+                <strong className="mr-auto">
+                  {confirmError
+                    ? "confirmError!"
+                    : confirmMessage
+                    ? "Success"
+                    : null}
+                </strong>
+              </Toast.Header>
+              <Toast.Body>
+                {confirmError ? (
+                  <Alert variant="danger">{confirmError}</Alert>
+                ) : confirmMessage ? (
+                  <Alert variant="success">
+                    {confirmMessage}
+                    <br />
+                    <Link className="link" to="/login">
+                      <i className="fa fa-sign-in-alt" /> Click here login.
+                    </Link>
+                  </Alert>
+                ) : null}
+              </Toast.Body>
+            </Toast>
+          </div>
+        </Collapse>
+
+        {/* {confirmError ? (
           <motion.div
             initial="out"
             animate="in"
@@ -217,7 +265,7 @@ export default function PasswordReset({ pageTransitions }) {
               </Alert>
             </motion.div>
           )
-        )}
+        )} */}
       </Form>
     </motion.div>
   );

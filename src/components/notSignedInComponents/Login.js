@@ -1,4 +1,4 @@
-import { Form, Button, Alert } from "react-bootstrap";
+import { Form, Button, Alert, Collapse, Toast } from "react-bootstrap";
 import "../../style/Form.scss";
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -77,19 +77,32 @@ function Login({ pageTransitions }) {
           {loading ? <i className="fa fa-spinner fa-spin" /> : "Login"}
         </Button>
 
-        {error && (
-          <motion.div
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransitions.pageVariants}
-            transition={pageTransitions.pageTransition}
-          >
-            <Alert style={{ marginTop: "20px" }} variant="danger">
-              {error}
-            </Alert>
-          </motion.div>
-        )}
+        <Collapse in={error}>
+          <div>
+            <Toast
+              onClose={() => {
+                setError("");
+              }}
+              show={error}
+              delay={5000}
+              className="toast"
+              autohide
+            >
+              <Toast.Header>
+                {/* <img
+                      src="holder.js/20x20?text=%20"
+                      className="rounded mr-2"
+                      alt=""
+                    /> */}
+                <strong className="mr-auto">Error!</strong>
+              </Toast.Header>
+              <Toast.Body>
+                <Alert variant="danger">{error}</Alert>
+              </Toast.Body>
+            </Toast>
+          </div>
+        </Collapse>
+
         <Link className="link" to="/register">
           <i className="fa fa-address-card" /> If you don't have an account,
           click here to create one

@@ -1,10 +1,8 @@
 import "../style/App.scss";
 import { motion } from "framer-motion";
-import UserContext from "./../user/UserContext";
-import { useContext } from "react";
+import RecipeCards from "./RecipeCards.js";
 
 export default function Home({ pageTransitions }) {
-  const { user } = useContext(UserContext);
   return (
     <motion.div
       initial="out"
@@ -13,7 +11,8 @@ export default function Home({ pageTransitions }) {
       variants={pageTransitions.pageVariants}
       transition={pageTransitions.pageTransition}
     >
-      <h1>Home</h1>
+      <h1 style={{ marginBottom: "20px", textAlign: "center" }}>Recipes</h1>
+      <RecipeCards />
     </motion.div>
   );
 }
