@@ -10,6 +10,7 @@ import {
   Alert,
   Collapse,
   Toast,
+  Modal,
 } from "react-bootstrap";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { v4 as uuidv4 } from "uuid";
@@ -37,18 +38,11 @@ export default function AddRecipe({ pageTransitions }) {
 
   const getRecipeCategories = () => {
     axios
-      .get("http://localhost:8080/recipes/get/recipes_categories", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
+      .get("http://localhost:8080/recipes/r/r/get/recipes_categories")
       .then((response) => {
         if (response.data.err) {
           setRecipeCategoriesError(response.data.err);
         } else {
-          if (response.data.newToken) {
-            localStorage.setItem("token", response.data.newToken);
-          }
           setRecipeCategories(response.data.result);
         }
       })
@@ -62,7 +56,7 @@ export default function AddRecipe({ pageTransitions }) {
     if (input.length > 1) {
       setGroceriesLoading(true);
       axios
-        .get(`http://localhost:8080/recipes/search_groceries/${input}`, {
+        .get(`http://localhost:8080/recipes/r/r/search_groceries/${input}`, {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
@@ -264,30 +258,20 @@ export default function AddRecipe({ pageTransitions }) {
       transition={pageTransitions.pageTransition}
       className="add-recipe"
     >
-      <div className="warning-toast">
-        <Collapse in={warningToastShow}>
-          <div>
-            <Toast
-              onClose={() => setWarningToastShow(false)}
-              show={warningToastShow}
-              delay={5000}
-              autohide
-            >
-              <Toast.Header>
-                {/* <img
-                      src="holder.js/20x20?text=%20"
-                      className="rounded mr-2"
-                      alt=""
-                    /> */}
-                <strong className="mr-auto">Warning!</strong>
-              </Toast.Header>
-              <Toast.Body>
-                <Alert variant="warning">This grocery is already added.</Alert>
-              </Toast.Body>
-            </Toast>
-          </div>
-        </Collapse>
-      </div>
+      <Modal show={warningToastShow} onHide={() => setWarningToastShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Warning!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>This grocery is already added.</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setWarningToastShow(false)}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <h2>Add Recipe</h2>
 
@@ -402,7 +386,7 @@ export default function AddRecipe({ pageTransitions }) {
                       key={addedGrocery.grocery.g_id}
                       timeout={500}
                       classNames="item"
-                      className="grocery added-grocery"
+                      className="grocery added-grocery contain"
                     >
                       <div
                         style={{ position: "relative", paddingBottom: "40px" }}
@@ -467,7 +451,7 @@ export default function AddRecipe({ pageTransitions }) {
                 <div className="groceries-placeholder"></div>
               </TransitionGroup>
             ) : (
-              <span>You have to add at lest 2 ingredients.</span>
+              <span>You have to add at least 2 ingredients.</span>
             )}
           </div>
 

@@ -1,0 +1,28 @@
+.favorite-recipes {
+  width: calc(100vw - 307px);
+  margin-top: 20px;
+}
+
+td {
+  vertical-align: middle !important;
+}
+
+.favorite {
+  font-size: 25px;
+  color: #d61e1e;
+  transition: 0.3s;
+  &:hover:not(.card-favorite) {
+    cursor: pointer;
+    transform: scale(1.3);
+  }
+}
+
+.not-favorite {
+  color: #636363;
+}
+
+@media only screen and (max-width: 480px) {
+  .favorite-recipes {
+    width: calc(100vw - 10px);
+  }
+}

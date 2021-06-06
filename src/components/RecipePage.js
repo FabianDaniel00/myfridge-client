@@ -50,6 +50,7 @@ export default function RecipePage({ pageTransitions }) {
   const [ratingsCount, setRatingsCount] = useState(0);
   const [ratingDataLoading, setRatingDataLoading] = useState(true);
   const [ratingDataError, setRatingDataError] = useState("");
+  const [favoriteError, setFavoriteError] = useState("");
 
   const { user } = useContext(userContext);
 
@@ -64,7 +65,7 @@ export default function RecipePage({ pageTransitions }) {
 
   const getRecipe = () => {
     axios
-      .get(`http://localhost:8080/recipes/recipe/${r_id}`)
+      .get(`http://localhost:8080/recipes/r/r/recipe/${r_id}`)
       .then((response) => {
         if (response.data.err) {
           setError(response.data.err);
@@ -125,7 +126,7 @@ export default function RecipePage({ pageTransitions }) {
   const getRatingData = () => {
     setRatingDataLoading(true);
     axios
-      .get(`http://localhost:8080/recipes/rating_data/${r_id}`)
+      .get(`http://localhost:8080/recipes/r/r/rating_data/${r_id}`)
       .then((response) => {
         if (response.data.err) {
           setRatingDataError(response.data.err);
@@ -408,6 +409,42 @@ export default function RecipePage({ pageTransitions }) {
       });
   };
 
+  const addFavoriteRecipe = () => {
+    axios
+      .post(
+        "http://localhost:8080/recipes/favorite_recipes",
+        {
+          r_id,
+        },
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.err) {
+          setFavoriteError(response.data.err);
+        } else {
+          if (response.data.newToken) {
+            localStorage.setItem("token", response.data.newToken);
+          }
+          if (response.data.updated || response.data.added) {
+            const recipe_ = { ...recipe };
+            if (recipe_.data.is_favorite) {
+              recipe_.data.is_favorite = false;
+            } else {
+              recipe_.data.is_favorite = true;
+            }
+            setRecipe(recipe_);
+          }
+        }
+      })
+      .catch((error) => {
+        setFavoriteError(error.message);
+      });
+  };
+
   return (
     <motion.div
       initial="out"
@@ -667,6 +704,72 @@ export default function RecipePage({ pageTransitions }) {
                 )}
               </span>
             </div>
+            {user && (
+              <div
+                style={{
+                  marginBottom: "20px",
+                }}
+              >
+                {recipe.data.is_favorite ? (
+                  <span
+                    style={{
+                      color: "#636363",
+                      fontSize: "13px",
+                      display: "flex",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <span style={{ marginRight: "5px", width: "143px" }}>
+                      Remove from favorites:
+                    </span>
+                    <i
+                      onClick={addFavoriteRecipe}
+                      className="fas fa-heart favorite"
+                    />
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      color: "#636363",
+                      fontSize: "13px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span style={{ marginRight: "5px", width: "143px" }}>
+                      Add to favorites:
+                    </span>
+                    <i
+                      onClick={addFavoriteRecipe}
+                      className="far fa-heart favorite not-favorite"
+                    />
+                  </span>
+                )}
+                <Collapse in={favoriteError}>
+                  <div>
+                    <Toast
+                      onClose={() => setFavoriteError("")}
+                      show={favoriteError}
+                      delay={5000}
+                      autohide
+                    >
+                      <Toast.Header>
+                        {/* <img
+                      src="holder.js/20x20?text=%20"
+                      className="rounded mr-2"
+                      alt=""
+                    /> */}
+                        <strong className="mr-auto">Error!</strong>
+                      </Toast.Header>
+                      <Toast.Body>
+                        <Alert variant="danger">{favoriteError}</Alert>
+                      </Toast.Body>
+                    </Toast>
+                  </div>
+                </Collapse>
+              </div>
+            )}
             <div>
               <div className="monogram">{recipe.data.u_monogram}</div>
               By{" "}

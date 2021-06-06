@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   CDBSidebar,
   CDBSidebarContent,
@@ -7,17 +7,27 @@ import {
   CDBSidebarMenu,
   CDBSidebarMenuItem,
 } from "cdbreact";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import "../style/Sidebar.scss";
 import { Badge } from "react-bootstrap";
 import UserContext from "../user/UserContext.js";
 import Logout from "./signedInComponents/Logout.js";
 
 const Sidebar = () => {
+  const [location, setLocation] = useState("");
+
   const { user } = useContext(UserContext);
+
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    setLocation(pathname.substring(1, 8));
+  }, [pathname]);
 
   useEffect(() => {
     hideUser();
+
+    setLocation(pathname.substring(1, 8));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -62,7 +72,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <CDBSidebar textColor="#fff" backgroundColor="#17a2b8" id="sidebar">
         {user && (
-          <div style={{ textAlign: "center" }}>
+          <Link to="/profile_page" className="profile-sidebar">
             <div id="monogram" className="monogram-sidebar">
               <b>{user.u_monogram}</b>
             </div>
@@ -70,18 +80,20 @@ const Sidebar = () => {
               {user.u_f_name} {user.u_l_name}
             </Badge>
             <hr id="hr" style={{ margin: "0", transition: "0.5s" }} />
-          </div>
+          </Link>
         )}
         <CDBSidebarHeader
           prefix={
             <i
-              onClick={() => hideUser(true)}
+              onClick={() => {
+                hideUser(true);
+              }}
               className="fa fa-bars fa-large bigger"
             ></i>
           }
         >
           <Link
-            to="/recipes/1"
+            to="/recipes/all/1/all"
             style={{ transition: "0.3s" }}
             className="text-decoration-none"
           >
@@ -91,16 +103,56 @@ const Sidebar = () => {
 
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarMenu>
-            <NavLink exact to="/recipes/1" activeClassName="activeClicked">
-              <CDBSidebarMenuItem className="opacity" icon="home">
+            <NavLink exact to="/recipes/all/1/all">
+              <CDBSidebarMenuItem
+                className={`opacity ${
+                  location === "recipes" ? "active-sidebar" : ""
+                }`}
+                icon="home"
+              >
                 Home
               </CDBSidebarMenuItem>
             </NavLink>
+
+            <NavLink
+              exact
+              to="/recipe_categories"
+              activeClassName="activeClicked"
+            >
+              <CDBSidebarMenuItem
+                className="opacity"
+                icon="fas fa-shopping-basket"
+              >
+                Recipe Categories
+              </CDBSidebarMenuItem>
+            </NavLink>
+
+            <hr style={{ border: "1px solid #fff", width: "80%" }} />
+
             {user ? (
               <>
                 <NavLink exact to="/add_recipe" activeClassName="activeClicked">
                   <CDBSidebarMenuItem className="opacity" icon="fas fa-plus">
                     Add Recipe
+                  </CDBSidebarMenuItem>
+                </NavLink>
+
+                <NavLink exact to="/my_fridge" activeClassName="activeClicked">
+                  <CDBSidebarMenuItem
+                    className="opacity"
+                    icon="fas fa-utensils"
+                  >
+                    My Fridge
+                  </CDBSidebarMenuItem>
+                </NavLink>
+
+                <NavLink
+                  exact
+                  to="/favorite_recipes"
+                  activeClassName="activeClicked"
+                >
+                  <CDBSidebarMenuItem className="opacity" icon="fas fa-heart">
+                    Favorite Recipes
                   </CDBSidebarMenuItem>
                 </NavLink>
               </>
@@ -111,6 +163,7 @@ const Sidebar = () => {
                     Login
                   </CDBSidebarMenuItem>
                 </NavLink>
+
                 <NavLink exact to="/register" activeClassName="activeClicked">
                   <CDBSidebarMenuItem className="opacity" icon="id-card">
                     Register

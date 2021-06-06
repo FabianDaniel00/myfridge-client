@@ -32,6 +32,7 @@
 }
 
 .grocery {
+  position: relative;
   flex: 1;
   min-width: 80px;
   padding: 5px;
@@ -83,33 +84,13 @@ input[type="number"] {
   border-left: 1px solid transparent;
 }
 
-.item-enter {
-  opacity: 0;
-}
-.item-enter-active {
-  opacity: 1;
-  transition: opacity 500ms ease-in;
-}
-.item-exit {
-  opacity: 1;
-}
-.item-exit-active {
-  opacity: 0;
-  transition: opacity 500ms ease-in;
+.added {
+  min-width: 60px;
 }
 
 .toast {
   margin: 20px 0;
   width: 100%;
-}
-
-.warning-toast {
-  position: fixed;
-  display: flex;
-  right: 0;
-  top: 200px;
-  z-index: 10;
-  opacity: 0.95;
 }
 
 @media only screen and (max-width: 480px) {

@@ -54,6 +54,15 @@ a {
   transition: 0.5s;
 }
 
+.profile-sidebar {
+  text-align: center;
+}
+
+.active-sidebar {
+  background-color: #fff;
+  color: #17a2b8;
+}
+
 @media only screen and (max-width: 480px) {
   .sidebar {
     transform: translateX(-100%);

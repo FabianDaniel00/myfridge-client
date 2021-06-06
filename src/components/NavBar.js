@@ -50,21 +50,32 @@ const NavBar = () => {
           <NavLink
             onClick={() => setNavExpanded(false)}
             className="top-nav-link"
-            to="/recipes/1"
+            to="/recipes/all/1/all"
           >
             myFridge
           </NavLink>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        {user && <div className="monogram-navbar">{user.u_monogram}</div>}
+        {user && (
+          <NavLink to="/profile_page" className="monogram-navbar">
+            {user.u_monogram}
+          </NavLink>
+        )}
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
             <NavLink
               onClick={() => setNavExpanded(false)}
               className="nav-link"
-              to="/recipes/1"
+              to="/recipes/all/1/all"
             >
               <i className="fa fa-home" /> Home
+            </NavLink>
+            <NavLink
+              onClick={() => setNavExpanded(false)}
+              className="nav-link"
+              to="/recipe_categories"
+            >
+              <i className="fas fa-shopping-basket" /> Recipe Categories
             </NavLink>
             {user ? (
               <>
@@ -75,6 +86,23 @@ const NavBar = () => {
                 >
                   <i className="fas fa-plus" /> Add Recipe
                 </NavLink>
+
+                <NavLink
+                  onClick={() => setNavExpanded(false)}
+                  className="nav-link"
+                  to="/my_fridge"
+                >
+                  <i className="fas fa-utensils" /> My Fridge
+                </NavLink>
+
+                <NavLink
+                  onClick={() => setNavExpanded(false)}
+                  className="nav-link"
+                  to="/favorite_recipes"
+                >
+                  <i className="fas fa-heart" /> Favorite Recipes
+                </NavLink>
+
                 <div onClick={() => setNavExpanded(false)}>
                   <Logout navbar={true} />
                 </div>

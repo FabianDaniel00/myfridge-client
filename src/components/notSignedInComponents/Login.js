@@ -37,6 +37,10 @@ function Login({ pageTransitions }) {
           localStorage.setItem("token", response.data.token);
           redirect.push("/");
         }
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
       });
   };
 

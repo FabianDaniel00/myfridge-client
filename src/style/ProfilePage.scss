@@ -1,0 +1,52 @@
+.user-page {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.monogram {
+  border-radius: 50%;
+  background-color: #32a899;
+  font-size: 30px;
+  padding: 5px 7.5px;
+  display: inline-block;
+  color: #fff;
+  border: 1px solid #fff;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.user-i {
+  border-left: 2px solid #17a2b8;
+  padding: 5px 60px 5px 20px;
+}
+
+.edit {
+  position: absolute;
+  right: -50px;
+  transition: 0.3s;
+  &:hover {
+    text-decoration: underline;
+    color: #2242e3;
+  }
+}
+
+.created-at {
+  color: #a3a3a3;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.admin {
+  border: 1px solid #ff0000;
+  padding: 5px;
+  color: #bd5e00;
+  border-radius: 5px;
+  background-color: #ffd4d4;
+}
+
+.toast {
+  margin: 20px 0;
+  width: 100%;
+}

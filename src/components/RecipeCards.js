@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import "../style/RecipeCards.scss";
 import axios from "axios";
 import { useParams, Link, useHistory } from "react-router-dom";
@@ -12,9 +12,10 @@ import {
 } from "react-bootstrap";
 import moment from "moment";
 import defaultRecipe from "../img/recipe_default.png";
+import UserContext from "../user/UserContext.js";
 
 export default function RecipeCards() {
-  const { page } = useParams();
+  const { category, page, search } = useParams();
 
   const redirect = useHistory();
 
@@ -24,10 +25,12 @@ export default function RecipeCards() {
   const [pagination, setPagination] = useState([]);
   const [ratings, setRatings] = useState("");
 
+  const { user } = useContext(UserContext);
+
   const getRecipes = () => {
     setLoading(true);
     axios
-      .get(`http://localhost:8080/recipes/${page}`)
+      .get(`http://localhost:8080/recipes/${category}/${page}/${search}`)
       .then((response) => {
         if (response.data.err) {
           setError(response.data.err);
@@ -39,7 +42,7 @@ export default function RecipeCards() {
               ...pagination,
               <Pagination.Item
                 onClick={() => {
-                  redirect.push(`/recipes/${i}`);
+                  redirect.push(`/recipes/${category}/${i}/${search}`);
                 }}
                 key={i}
                 active={i === parseInt(page)}
@@ -187,6 +190,40 @@ export default function RecipeCards() {
                             </span>
                           )}
                         </ListGroupItem>
+                        {user && (
+                          <ListGroupItem>
+                            {recipe.is_favorite ? (
+                              <span
+                                style={{
+                                  color: "#636363",
+                                  fontSize: "13px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <span style={{ marginRight: "5px" }}>
+                                  Your favorite
+                                </span>
+                                <i className="fas fa-heart card-favorite favorite" />
+                              </span>
+                            ) : (
+                              <span
+                                style={{
+                                  color: "#636363",
+                                  fontSize: "13px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <span style={{ marginRight: "5px" }}>
+                                  Not your favorite
+                                </span>
+                                <i className="far fa-heart favorite card-favorite not-favorite" />
+                              </span>
+                            )}
+                          </ListGroupItem>
+                        )}
                       </ListGroup>
                       <Card.Footer
                         style={{
@@ -204,28 +241,30 @@ export default function RecipeCards() {
                 );
               })}
             <div
-              style={{ minWidth: "280px", flex: "1 0", margin: "0 15px" }}
+              style={{ minWidth: "300px", flex: "1 0", margin: "0 15px" }}
             ></div>
             <div
-              style={{ minWidth: "280px", flex: "1 0", margin: "0 15px" }}
+              style={{ minWidth: "300px", flex: "1 0", margin: "0 15px" }}
             ></div>
             <div
-              style={{ minWidth: "280px", flex: "1 0", margin: "0 15px" }}
+              style={{ minWidth: "300px", flex: "1 0", margin: "0 15px" }}
             ></div>
             <div
-              style={{ minWidth: "280px", flex: "1 0", margin: "0 15px" }}
+              style={{ minWidth: "300px", flex: "1 0", margin: "0 15px" }}
             ></div>
           </CardDeck>
           <Pagination style={{ justifyContent: "center" }}>
             <Pagination.First
               onClick={() => {
-                redirect.push("/recipes/1");
+                redirect.push(`/recipes/${category}/1/${search}`);
               }}
             />
             <Pagination.Prev
               onClick={() => {
                 if (parseInt(page) > 1) {
-                  redirect.push(`/recipes/${parseInt(page) - 1}`);
+                  redirect.push(
+                    `/recipes/${category}/${parseInt(page) - 1}/${search}`
+                  );
                 }
               }}
             />
@@ -233,13 +272,17 @@ export default function RecipeCards() {
             <Pagination.Next
               onClick={() => {
                 if (parseInt(page) < pagination.length) {
-                  redirect.push(`/recipes/${parseInt(page) + 1}`);
+                  redirect.push(
+                    `/recipes/${category}/${parseInt(page) + 1}/${search}`
+                  );
                 }
               }}
             />
             <Pagination.Last
               onClick={() => {
-                redirect.push(`/recipes/${pagination.length}`);
+                redirect.push(
+                  `/recipes/${category}/${pagination.length}/${search}`
+                );
               }}
             />
           </Pagination>

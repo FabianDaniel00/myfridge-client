@@ -1,0 +1,65 @@
+.not-contain-label {
+  position: absolute;
+  transform: rotate(90deg);
+  top: 395px;
+  left: 220px;
+  width: 121px;
+  text-align: justify;
+}
+
+.to-contain {
+  position: absolute;
+  left: 5%;
+  top: 60%;
+  background-color: #d63636;
+  padding: 2px 8px;
+  font-size: 20px;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  transition: 0.3s;
+  opacity: 0;
+}
+
+.to-not-contain {
+  position: absolute;
+  left: 55%;
+  top: 60%;
+  font-size: 20px;
+  background-color: #32a852;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  transition: 0.3s;
+  opacity: 0;
+}
+
+.to-contain:hover,
+.to-not-contain:hover {
+  opacity: 1 !important;
+}
+
+.grocery:hover > .to-contain,
+.grocery:hover > .to-not-contain {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.contain {
+  background-color: #e0ffe9;
+  min-width: 60px;
+}
+
+.not-contain {
+  background-color: #ffe0e0;
+  min-width: 60px;
+}
+
+.fridge {
+  background-image: url("../img/fridge.png");
+  height: 536px;
+  width: 330px;
+  background-size: cover;
+  padding: 20px;
+}

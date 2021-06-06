@@ -16,6 +16,10 @@ import AgainRegisterVerification from "./components/notSignedInComponents/AgainR
 import PasswordReset from "./components/notSignedInComponents/PasswordReset.js";
 import RecipePage from "./components/RecipePage.js";
 import AddRecipe from "./components/signedInComponents/AddRecipe.js";
+import RecipeCategories from "./components/RecipeCategories.js";
+import MyFridge from "./components/signedInComponents/MyFridge.js";
+import ProfilePage from "./components/signedInComponents/ProfilePage.js";
+import FavoriteRecipes from "./components/signedInComponents/FavoriteRecipes";
 
 function App() {
   const [user, setUser] = useState("");
@@ -87,14 +91,14 @@ function App() {
               <AnimatePresence exitBeforeEnter>
                 <Switch location={location} key={location.pathname}>
                   <Route exact path="/">
-                    <Redirect exact to="/recipes/1" />
+                    <Redirect exact to="/recipes/all/1/all" />
                   </Route>
 
                   <Route exact path="/recipes">
-                    <Redirect exact to="/recipes/1" />
+                    <Redirect exact to="/recipes/all/1/all" />
                   </Route>
 
-                  <Route exact path="/recipes/:page">
+                  <Route exact path="/recipes/:category/:page/:search">
                     <Home pageTransitions={pageTransitions} />
                   </Route>
 
@@ -140,6 +144,10 @@ function App() {
                     )}
                   </Route>
 
+                  <Route path="/recipe_categories">
+                    <RecipeCategories pageTransitions={pageTransitions} />
+                  </Route>
+
                   <Route path="/recipe/:r_id">
                     <RecipePage pageTransitions={pageTransitions} />
                   </Route>
@@ -150,6 +158,34 @@ function App() {
                     ) : (
                       <Redirect to="/login" />
                     )}
+                  </Route>
+
+                  <Route path="/my_fridge/:page?/:ingredients?">
+                    {user ? (
+                      <MyFridge pageTransitions={pageTransitions} />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+
+                  <Route path="/profile_page">
+                    {user ? (
+                      <ProfilePage pageTransitions={pageTransitions} />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+
+                  <Route path="/favorite_recipes">
+                    {user ? (
+                      <FavoriteRecipes pageTransitions={pageTransitions} />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+
+                  <Route exact path="/recipes/*">
+                    <Redirect exact to="/recipes/all/1/all" />
                   </Route>
 
                   <Route path="*">
