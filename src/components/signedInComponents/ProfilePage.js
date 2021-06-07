@@ -620,7 +620,7 @@ export default function ProfilePage({ pageTransitions }) {
         </Modal.Footer>
       </Modal>
 
-      <h1 style={{ marginBottom: "40px" }}>Profile Page</h1>
+      <h1 style={{ marginBottom: "40px", marginLeft: "20px" }}>Profile Page</h1>
       <div className="user-page">
         <div className="monogram">{user.u_monogram}</div>
 
@@ -634,7 +634,7 @@ export default function ProfilePage({ pageTransitions }) {
             <div style={{ position: "relative", marginBottom: "10px" }}>
               First Name:{" "}
               <span style={{ color: "#17a2b8" }}>{user.u_f_name}</span>
-              <i onClick={() => setShowFName(true)} className="edit">
+              <i onClick={() => setShowFName(true)} className="edit-page">
                 Edit
               </i>
             </div>
@@ -642,14 +642,14 @@ export default function ProfilePage({ pageTransitions }) {
             <div style={{ position: "relative", margin: "10px 0" }}>
               Last Name:{" "}
               <span style={{ color: "#17a2b8" }}>{user.u_l_name}</span>
-              <i onClick={() => setShowLName(true)} className="edit">
+              <i onClick={() => setShowLName(true)} className="edit-page">
                 Edit
               </i>
             </div>
 
             <div style={{ position: "relative", margin: "10px 0" }}>
               Email: <span style={{ color: "#17a2b8" }}>{user.u_email}</span>
-              <i onClick={() => setShowEmail(true)} className="edit">
+              <i onClick={() => setShowEmail(true)} className="edit-page">
                 Edit
               </i>
             </div>
@@ -657,7 +657,7 @@ export default function ProfilePage({ pageTransitions }) {
             <div style={{ position: "relative", margin: "10px 0" }}>
               Phone number:{" "}
               <span style={{ color: "#17a2b8" }}>{user.u_tel}</span>
-              <i onClick={() => setShowTel(true)} className="edit">
+              <i onClick={() => setShowTel(true)} className="edit-page">
                 Edit
               </i>
             </div>
@@ -666,7 +666,7 @@ export default function ProfilePage({ pageTransitions }) {
               Password{" "}
               <i
                 onClick={() => setShowPassword(true)}
-                className="edit password"
+                className="edit-page password"
               >
                 Edit
               </i>

@@ -21,6 +21,11 @@ td {
   color: #636363;
 }
 
+.days {
+  position: absolute;
+  top: 0;
+}
+
 @media only screen and (max-width: 480px) {
   .favorite-recipes {
     width: calc(100vw - 10px);

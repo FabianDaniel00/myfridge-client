@@ -1,0 +1,35 @@
+.week-tab {
+  margin: 0 10px;
+}
+
+.recipe-day {
+  flex: 1;
+  min-width: 200px;
+  transition: 0.3s;
+  position: relative;
+  &:hover {
+    transform: scale(1.05);
+    text-decoration: none;
+    z-index: 1;
+    background-color: #e8faff;
+  }
+}
+
+.recipe-day-link:hover {
+  text-decoration: none;
+  color: #212529;
+}
+
+.remove-recipe {
+  position: absolute;
+  color: #ed2f2f;
+  right: 5px;
+  bottom: 0;
+  z-index: 1;
+  font-size: 25px;
+  transition: 0.3s;
+  &:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+}

@@ -103,6 +103,14 @@ const NavBar = () => {
                   <i className="fas fa-heart" /> Favorite Recipes
                 </NavLink>
 
+                <NavLink
+                  onClick={() => setNavExpanded(false)}
+                  className="nav-link"
+                  to="/weekly_menu"
+                >
+                  <i className="fas fa-calendar-week" /> Weekly Menu
+                </NavLink>
+
                 <div onClick={() => setNavExpanded(false)}>
                   <Logout navbar={true} />
                 </div>

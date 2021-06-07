@@ -711,7 +711,7 @@ export default function RecipePage({ pageTransitions }) {
                 }}
               >
                 {recipe.data.is_favorite ? (
-                  <span
+                  <div
                     style={{
                       color: "#636363",
                       fontSize: "13px",
@@ -727,7 +727,7 @@ export default function RecipePage({ pageTransitions }) {
                       onClick={addFavoriteRecipe}
                       className="fas fa-heart favorite"
                     />
-                  </span>
+                  </div>
                 ) : (
                   <span
                     style={{

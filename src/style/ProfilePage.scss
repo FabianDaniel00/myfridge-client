@@ -12,8 +12,7 @@
   display: inline-block;
   color: #fff;
   border: 1px solid #fff;
-  margin-right: 20px;
-  margin-bottom: 20px;
+  margin: 0 20px 20px 20px;
   width: fit-content;
 }
 
@@ -22,13 +21,14 @@
   padding: 5px 60px 5px 20px;
 }
 
-.edit {
+.edit-page {
   position: absolute;
   right: -50px;
   transition: 0.3s;
   &:hover {
     text-decoration: underline;
     color: #2242e3;
+    cursor: pointer;
   }
 }
 

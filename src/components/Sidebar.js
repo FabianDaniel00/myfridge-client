@@ -155,6 +155,19 @@ const Sidebar = () => {
                     Favorite Recipes
                   </CDBSidebarMenuItem>
                 </NavLink>
+
+                <NavLink
+                  exact
+                  to="/weekly_menu"
+                  activeClassName="activeClicked"
+                >
+                  <CDBSidebarMenuItem
+                    className="opacity"
+                    icon="fas fa-calendar-week"
+                  >
+                    Weekly Menu
+                  </CDBSidebarMenuItem>
+                </NavLink>
               </>
             ) : (
               <>

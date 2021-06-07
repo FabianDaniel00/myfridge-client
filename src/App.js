@@ -19,7 +19,8 @@ import AddRecipe from "./components/signedInComponents/AddRecipe.js";
 import RecipeCategories from "./components/RecipeCategories.js";
 import MyFridge from "./components/signedInComponents/MyFridge.js";
 import ProfilePage from "./components/signedInComponents/ProfilePage.js";
-import FavoriteRecipes from "./components/signedInComponents/FavoriteRecipes";
+import FavoriteRecipes from "./components/signedInComponents/FavoriteRecipes.js";
+import Menu from "./components/signedInComponents/Menu.js";
 
 function App() {
   const [user, setUser] = useState("");
@@ -179,6 +180,14 @@ function App() {
                   <Route path="/favorite_recipes">
                     {user ? (
                       <FavoriteRecipes pageTransitions={pageTransitions} />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+
+                  <Route path="/weekly_menu">
+                    {user ? (
+                      <Menu pageTransitions={pageTransitions} />
                     ) : (
                       <Redirect to="/login" />
                     )}
