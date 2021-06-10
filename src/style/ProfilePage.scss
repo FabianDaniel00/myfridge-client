@@ -2,9 +2,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
+  justify-content: center;
 }
 
-.monogram {
+.monogram-profile {
   border-radius: 50%;
   background-color: #32a899;
   font-size: 30px;
@@ -25,6 +26,7 @@
   position: absolute;
   right: -50px;
   transition: 0.3s;
+  color: #808080;
   &:hover {
     text-decoration: underline;
     color: #2242e3;
@@ -44,6 +46,7 @@
   color: #bd5e00;
   border-radius: 5px;
   background-color: #ffd4d4;
+  font-size: 15px;
 }
 
 .toast {

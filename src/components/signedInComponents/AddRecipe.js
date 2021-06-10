@@ -536,7 +536,7 @@ export default function AddRecipe({ pageTransitions }) {
                   setAddRecipeMessage("");
                 }}
                 show={addRecipeError || addRecipeMessage}
-                delay={10000}
+                delay={30000}
                 className="toast"
                 autohide
               >

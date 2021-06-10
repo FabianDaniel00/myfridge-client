@@ -59,7 +59,14 @@ export default function Logout({ navbar }) {
       {navbar ? (
         <>
           <NavDropdown.Divider />
-          <NavLink className="nav-link" to="" onClick={logout}>
+          <NavLink
+            className="nav-link"
+            to=""
+            onClick={() => {
+              window.scrollTo(0, 0);
+              logout();
+            }}
+          >
             {loading ? (
               <i className="fa fa-spinner fa-spin" />
             ) : (

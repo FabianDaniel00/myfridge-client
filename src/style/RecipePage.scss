@@ -148,22 +148,12 @@
 
 .comment {
   margin-top: 20px;
+  transition: 0.3s;
 }
 
 .toast {
   margin: 20px 0;
   width: 100%;
-}
-
-.edit {
-  position: absolute;
-  right: 45px;
-  color: #6c757d;
-  transition: 0.5s;
-  &:hover {
-    opacity: 0.7;
-    cursor: pointer;
-  }
 }
 
 .delete {

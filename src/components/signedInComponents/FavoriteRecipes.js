@@ -14,9 +14,11 @@ import {
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "../../style/FavoriteRecipes.scss";
+import defaultRecipe from "../../img/recipe_default.png";
 
 export default function FavoriteRecipes({ pageTransitions }) {
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
+  const [daysFromWeeklyMenu, setDaysFromWeeklyMenu] = useState([]);
   const [favoriteRecipesLoading, setFavoriteRecipesLoading] = useState(true);
   const [favoriteRecipesError, setFavoriteRecipesError] = useState("");
   const [ratings, setRatings] = useState("");
@@ -24,7 +26,7 @@ export default function FavoriteRecipes({ pageTransitions }) {
   const [modalError, setModalError] = useState("");
   const [showWeeklyModal, setShowWeeklyModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState(new Date().getDay());
-  const [selectedRecipe, setSelectedRecipe] = useState("");
+  const [selectedRecipeId, setSelectedRecipeId] = useState("");
   const [addToWeeklyLoading, setAddToWeeklyLoading] = useState(false);
   const [addToWeeklyError, setAddToWeeklyError] = useState("");
   const [addToWeeklyMessage, setAddToWeeklyMessage] = useState("");
@@ -53,6 +55,8 @@ export default function FavoriteRecipes({ pageTransitions }) {
             }
             return response.data.favoriteRecipes;
           });
+
+          setDaysFromWeeklyMenu(response.data.daysFromWeeklyMenu.sort());
 
           const ratings_ = [];
           const recipesCount = response.data.favoriteRecipes.length;
@@ -159,7 +163,7 @@ export default function FavoriteRecipes({ pageTransitions }) {
         "http://localhost:8080/recipes/add_to_weekly_menu",
         {
           day: selectedDay,
-          r_id: selectedRecipe,
+          r_id: selectedRecipeId,
         },
         {
           headers: {
@@ -175,6 +179,13 @@ export default function FavoriteRecipes({ pageTransitions }) {
           if (response.data.newToken) {
             localStorage.setItem("token", response.data.newToken);
           }
+          setDaysFromWeeklyMenu(() => {
+            const days = [...daysFromWeeklyMenu];
+            days.push({ day: String(selectedDay), r_id: selectedRecipeId });
+            return days.sort((a, b) =>
+              a.day > b.day ? 1 : b.day > a.day ? -1 : 0
+            );
+          });
           setAddToWeeklyError("");
           setAddToWeeklyMessage(response.data.message);
         }
@@ -194,7 +205,6 @@ export default function FavoriteRecipes({ pageTransitions }) {
       exit="out"
       variants={pageTransitions.pageVariants}
       transition={pageTransitions.pageTransition}
-      className="favorite-recipes"
     >
       <Modal show={modalError} onHide={() => setModalError("")}>
         <Modal.Header closeButton>
@@ -213,28 +223,77 @@ export default function FavoriteRecipes({ pageTransitions }) {
           <Modal.Title>Add to weekly menu</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {selectedRecipe && (
-            <Card style={{ width: "18rem", margin: "0 auto 30px auto" }}>
-              <Card.Img
-                variant="top"
-                src={`data:image/png;base64,
+          {selectedRecipeId && (
+            <div style={{ width: "18rem", margin: "0 auto 30px auto" }}>
+              <Card>
+                <Card.Img
+                  variant="top"
+                  src={
+                    favoriteRecipes.filter(
+                      (recipe) => recipe.recipe_id === selectedRecipeId
+                    )[0].r_pic
+                      ? `data:image/png;base64,
               ${
                 favoriteRecipes.filter(
-                  (recipe) => recipe.recipe_id === selectedRecipe
+                  (recipe) => recipe.recipe_id === selectedRecipeId
                 )[0].r_pic
-              }`}
-                alt={selectedRecipe}
-              />
-              <Card.Body>
-                <Card.Title>
-                  {
-                    favoriteRecipes.filter(
-                      (recipe) => recipe.recipe_id === selectedRecipe
-                    )[0].r_name
+              }`
+                      : defaultRecipe
                   }
-                </Card.Title>
-              </Card.Body>
-            </Card>
+                  alt={selectedRecipeId}
+                />
+                <Card.Body>
+                  <Card.Title>
+                    {
+                      favoriteRecipes.filter(
+                        (recipe) => recipe.recipe_id === selectedRecipeId
+                      )[0].r_name
+                    }
+                  </Card.Title>
+                </Card.Body>
+              </Card>
+              <div style={{ marginTop: "10px" }}>
+                {daysFromWeeklyMenu.filter(
+                  (day) => day.r_id === selectedRecipeId
+                ).length ? (
+                  <>
+                    This recipe is on:{" "}
+                    {daysFromWeeklyMenu
+                      .filter((day) => day.r_id === selectedRecipeId)
+                      .map((day, index) => {
+                        return (
+                          <span style={{ color: "#b0b0b0" }} key={day.day}>
+                            {day.day === "1"
+                              ? "Monday"
+                              : day.day === "2"
+                              ? "Tuesday"
+                              : day.day === "3"
+                              ? "Wednesday"
+                              : day.day === "4"
+                              ? "Thursday"
+                              : day.day === "5"
+                              ? "Friday"
+                              : day.day === "6"
+                              ? "Saturday"
+                              : day.day === "7"
+                              ? "Sunday"
+                              : null}
+                            {index !==
+                            daysFromWeeklyMenu.filter(
+                              (day) => day.r_id === selectedRecipeId
+                            ).length -
+                              1
+                              ? ", "
+                              : null}
+                          </span>
+                        );
+                      })}
+                  </>
+                ) : (
+                  "This recipe is not in weekly menu."
+                )}
+              </div>
+            </div>
           )}
           <Form.Group controlId="addToWeeklyMenu">
             <Form.Label>Select the day:</Form.Label>
@@ -263,7 +322,6 @@ export default function FavoriteRecipes({ pageTransitions }) {
                 }}
                 show={addToWeeklyError || addToWeeklyMessage}
                 delay={5000}
-                className="toast"
                 autohide
               >
                 <Toast.Header>
@@ -290,139 +348,167 @@ export default function FavoriteRecipes({ pageTransitions }) {
               </Toast>
             </div>
           </Collapse>
-          <Button variant="secondary" onClick={() => setShowWeeklyModal(false)}>
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={addToWeeklyMenu}
-            disabled={addToWeeklyLoading}
-          >
-            {addToWeeklyLoading ? (
-              <i className="fa fa-spinner fa-spin" />
-            ) : (
-              "Add"
-            )}
-          </Button>
+          <div style={{ whiteSpace: "nowrap" }}>
+            <Button
+              variant="secondary"
+              onClick={() => setShowWeeklyModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={addToWeeklyMenu}
+              disabled={addToWeeklyLoading}
+              style={{ marginLeft: "10px" }}
+            >
+              {addToWeeklyLoading ? (
+                <i className="fa fa-spinner fa-spin" />
+              ) : (
+                "Add"
+              )}
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
 
-      <h4 style={{ marginLeft: "20px" }}>Your favorite recipes</h4>
-      <br />
-      <Table hover responsive size="sm">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Picture</th>
-            <th>Recipe Name</th>
-            <th>Price</th>
-            <th>Category</th>
-            <th>Created By</th>
-            <th>Rating</th>
-            <th>Weekly Menu</th>
-            <th>Favorite</th>
-          </tr>
-        </thead>
-        <tbody>
-          {favoriteRecipesLoading ? (
+      <div className="favorite-recipes">
+        <h4 style={{ marginLeft: "20px" }}>Your favorite recipes</h4>
+        <br />
+        <Table hover responsive size="sm">
+          <thead>
             <tr>
-              <td colSpan="8" style={{ textAlign: "center" }}>
-                <i className="fa fa-spinner fa-spin" />
-              </td>
+              <th>#</th>
+              <th>Picture</th>
+              <th>Recipe Name</th>
+              <th>Price</th>
+              <th>Category</th>
+              <th>Created By</th>
+              <th>Rating</th>
+              <th>Weekly Menu</th>
+              <th>Favorite</th>
             </tr>
-          ) : favoriteRecipesError ? (
-            <tr>
-              <td colSpan="8" style={{ textAlign: "center" }}>
-                {favoriteRecipesError}
-              </td>
-            </tr>
-          ) : favoriteRecipes.length ? (
-            favoriteRecipes.map((favoriteRecipe, index) => {
-              return (
-                <tr key={favoriteRecipe.recipe_id}>
-                  <td>
-                    <Link to={`/recipe/${favoriteRecipe.recipe_id}`}>
-                      {index + 1}.
-                    </Link>
-                  </td>
-                  <td>
-                    <Link to={`/recipe/${favoriteRecipe.recipe_id}`}>
-                      <Image
-                        src={`data:image/png;base64,${favoriteRecipe.r_pic}`}
-                        alt={favoriteRecipe.recipe_id}
-                        width="100%"
-                        style={{ maxWidth: "200px", minWidth: "100px" }}
-                        rounded
-                      />
-                    </Link>
-                  </td>
-                  <td>
-                    <Link to={`/recipe/${favoriteRecipe.recipe_id}`}>
-                      {favoriteRecipe.r_name}
-                    </Link>
-                  </td>
-                  <td>{Math.round(favoriteRecipe.price * 100) / 100} €</td>
-                  <td>{favoriteRecipe.r_cat_name}</td>
-                  <td>
-                    {favoriteRecipe.u_f_name} {favoriteRecipe.u_l_name}
-                  </td>
-                  <td>
-                    {Math.round(favoriteRecipe.rating * 10) / 10 === 0 ? (
-                      "There is no rating yet."
-                    ) : (
-                      <span>
-                        <span style={{ whiteSpace: "nowrap" }}>
-                          Overall rating of{" "}
-                          <i>{favoriteRecipe.ratings_count}</i> is{" "}
+          </thead>
+          <tbody>
+            {favoriteRecipesLoading ? (
+              <tr style={{ transition: "0.3s" }}>
+                <td colSpan="9" style={{ textAlign: "center" }}>
+                  <i className="fa fa-spinner fa-spin" />
+                </td>
+              </tr>
+            ) : favoriteRecipesError ? (
+              <tr style={{ transition: "0.3s" }}>
+                <td colSpan="9" style={{ textAlign: "center" }}>
+                  {favoriteRecipesError}
+                </td>
+              </tr>
+            ) : favoriteRecipes.length ? (
+              favoriteRecipes.map((favoriteRecipe, index) => {
+                return (
+                  <tr
+                    key={favoriteRecipe.recipe_id}
+                    style={{ transition: "0.3s" }}
+                  >
+                    <td>
+                      <Link
+                        style={{ transition: "0.3s" }}
+                        to={`/recipe/${favoriteRecipe.recipe_id}`}
+                      >
+                        {index + 1}.
+                      </Link>
+                    </td>
+                    <td>
+                      <Link to={`/recipe/${favoriteRecipe.recipe_id}`}>
+                        <Image
+                          src={
+                            favoriteRecipe.r_pic
+                              ? `data:image/png;base64,${favoriteRecipe.r_pic}`
+                              : defaultRecipe
+                          }
+                          alt={favoriteRecipe.recipe_id}
+                          width="100%"
+                          style={{ maxWidth: "200px", minWidth: "100px" }}
+                          rounded
+                        />
+                      </Link>
+                    </td>
+                    <td>
+                      <Link
+                        style={{ transition: "0.3s" }}
+                        to={`/recipe/${favoriteRecipe.recipe_id}`}
+                      >
+                        {favoriteRecipe.r_name}
+                      </Link>
+                    </td>
+                    <td>{Math.round(favoriteRecipe.price * 100) / 100} €</td>
+                    <td>{favoriteRecipe.r_cat_name}</td>
+                    <td>
+                      {favoriteRecipe.u_f_name} {favoriteRecipe.u_l_name}
+                    </td>
+                    <td>
+                      {Math.round(favoriteRecipe.rating * 10) / 10 === 0 ? (
+                        "There is no rating yet."
+                      ) : (
+                        <span>
+                          <span style={{ whiteSpace: "nowrap" }}>
+                            Overall rating of{" "}
+                            <i>{favoriteRecipe.ratings_count}</i> is{" "}
+                          </span>
+                          {ratings[index].map((star) => {
+                            return star;
+                          })}
                         </span>
-                        {ratings[index].map((star) => {
-                          return star;
-                        })}
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    <Button
-                      variant="info"
-                      size="sm"
-                      style={{ whiteSpace: " nowrap" }}
-                      onClick={() => {
-                        setShowWeeklyModal(true);
-                        setSelectedRecipe(favoriteRecipe.recipe_id);
-                      }}
-                    >
-                      Add to weekly menu
-                    </Button>
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    {favoriteRecipe.favorite ? (
-                      <i
-                        onClick={() =>
-                          addFavoriteRecipe(favoriteRecipe.recipe_id)
-                        }
-                        className="fas fa-heart favorite"
-                      />
-                    ) : (
-                      <i
-                        onClick={() =>
-                          addFavoriteRecipe(favoriteRecipe.recipe_id)
-                        }
-                        className="far fa-heart favorite not-favorite"
-                      />
-                    )}
-                  </td>
-                </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <td colSpan="8" style={{ textAlign: "center", color: "#8a8a8a" }}>
-                You have no added favorite recipes.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+                      )}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <Button
+                        variant="info"
+                        size="sm"
+                        style={{ whiteSpace: " nowrap" }}
+                        onClick={() => {
+                          setShowWeeklyModal(true);
+                          setSelectedRecipeId(favoriteRecipe.recipe_id);
+                        }}
+                      >
+                        Add to weekly menu
+                      </Button>
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      {favoriteRecipe.favorite ? (
+                        <i
+                          onClick={() =>
+                            addFavoriteRecipe(favoriteRecipe.recipe_id)
+                          }
+                          className="fas fa-heart favorite"
+                        />
+                      ) : (
+                        <i
+                          onClick={() =>
+                            addFavoriteRecipe(favoriteRecipe.recipe_id)
+                          }
+                          className="far fa-heart favorite not-favorite"
+                        />
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td
+                  colSpan="9"
+                  style={{
+                    textAlign: "center",
+                    color: "#8a8a8a",
+                    transition: "0.3s",
+                  }}
+                >
+                  You have no added favorite recipes.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
     </motion.div>
   );
 }

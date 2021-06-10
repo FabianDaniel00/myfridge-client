@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import moment from "moment";
@@ -37,10 +37,6 @@ export default function RecipePage({ pageTransitions }) {
   const [commentId, setCommentId] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [commentContent, setCommentContent] = useState("");
-  const [editCommentLoading, setEditCommentLoading] = useState(false);
-  const [editCommentError, setEditCommentError] = useState("");
-  const [editCommentMessage, setEditCommentMessage] = useState("");
-  const [showEditModal, setShowEditModal] = useState(false);
   const [ratingStars, setRatingStars] = useState([]);
   const [rateError, setRateError] = useState("");
   const [rateMessage, setRateMessage] = useState("");
@@ -51,10 +47,20 @@ export default function RecipePage({ pageTransitions }) {
   const [ratingDataLoading, setRatingDataLoading] = useState(true);
   const [ratingDataError, setRatingDataError] = useState("");
   const [favoriteError, setFavoriteError] = useState("");
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [declineLoading, setDeclineLoading] = useState(false);
+  const [declineError, setDeclineError] = useState("");
+  const [declineMessage, setDeclineMessage] = useState("");
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [acceptLoading, setAcceptLoading] = useState(false);
+  const [acceptError, setAcceptError] = useState("");
+  const [acceptMessage, setAcceptMessage] = useState("");
 
   const { user } = useContext(userContext);
 
   const { r_id } = useParams();
+
+  const location = useLocation();
 
   useEffect(() => {
     getRecipe();
@@ -256,26 +262,21 @@ export default function RecipePage({ pageTransitions }) {
         if (response.data.err) {
           setCommentMessage("");
           setCommentError(response.data.err);
+          if (response.data.commentId) {
+            const comment_ = document.getElementById(response.data.commentId);
+            comment_.scrollIntoView();
+            comment_.style.backgroundColor = "#e6fcff";
+            setTimeout(() => {
+              comment_.style.backgroundColor = "#fff";
+            }, 5000);
+            setComment("");
+          }
         } else {
           if (response.data.newToken) {
             localStorage.setItem("token", response.data.newToken);
           }
           setCommentError("");
           setCommentMessage(response.data.message);
-          setComments((comments) => [
-            {
-              u_id: user.u_id,
-              r_comment_id,
-              r_comment: comment,
-              u_f_name: user.u_f_name,
-              u_l_name: user.u_l_name,
-              u_monogram: user.u_monogram,
-              r_comment_created_at: moment(new Date()).format(
-                "YYYY-MM-DD HH:mm:ss"
-              ),
-            },
-            ...comments,
-          ]);
           setComment("");
         }
         setCommentLoading(false);
@@ -324,53 +325,6 @@ export default function RecipePage({ pageTransitions }) {
         setCommentId("");
         setCommentContent("");
         setDeleteCommentLoading(false);
-      });
-  };
-
-  const editComment = () => {
-    setEditCommentLoading(true);
-    axios
-      .put(
-        "http://localhost:8080/recipes/edit_comment",
-        { r_comment_id: commentId, r_comment: commentContent },
-        {
-          headers: {
-            "x-access-token": localStorage.getItem("token"),
-          },
-        }
-      )
-      .then((response) => {
-        if (response.data.err) {
-          setEditCommentMessage("");
-          setEditCommentError(response.data.err);
-        } else {
-          if (response.data.newToken) {
-            localStorage.setItem("token", response.data.newToken);
-          }
-          setEditCommentError("");
-          setEditCommentMessage(response.data.message);
-          const comments_ = [];
-          for (const comment of comments) {
-            if (comment.r_comment_id === commentId) {
-              comment.r_comment = commentContent;
-              comment.r_comment_modified_at = new Date().toISOString();
-              comments_.push(comment);
-            } else {
-              comments_.push(comment);
-            }
-          }
-          setComments(comments_);
-        }
-        setCommentId("");
-        setCommentContent("");
-        setEditCommentLoading(false);
-      })
-      .catch((err) => {
-        setEditCommentMessage("");
-        setEditCommentError(err.message);
-        setCommentId("");
-        setCommentContent("");
-        setEditCommentLoading(false);
       });
   };
 
@@ -442,6 +396,88 @@ export default function RecipePage({ pageTransitions }) {
       })
       .catch((error) => {
         setFavoriteError(error.message);
+      });
+  };
+
+  const declineRecipe = () => {
+    setDeclineLoading(true);
+    axios
+      .post(
+        "http://localhost:8080/admin/decline_recipe",
+        {
+          r_id: recipe.data.r_id,
+          r_name: recipe.data.r_name,
+          email: recipe.data.u_email,
+          fName: recipe.data.u_f_name,
+          lName: recipe.data.u_l_name,
+        },
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.err) {
+          setDeclineMessage("");
+          setDeclineError(response.data.err);
+        } else {
+          if (response.data.newToken) {
+            localStorage.setItem("token", response.data.newToken);
+          }
+          setDeclineError("");
+          setDeclineMessage(response.data.message);
+          setRecipe(() => {
+            const recipe_ = { ...recipe };
+            recipe_.data.r_accepted = 0;
+            return recipe_;
+          });
+        }
+        setDeclineLoading(false);
+      })
+      .catch((error) => {
+        setDeclineMessage("");
+        setDeclineError(error.message);
+        setDeclineLoading(false);
+      });
+  };
+
+  const acceptRecipe = () => {
+    setAcceptLoading(true);
+    axios
+      .post(
+        "http://localhost:8080/admin/accept_recipe",
+        {
+          r_id: recipe.data.r_id,
+        },
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.err) {
+          setAcceptMessage("");
+          setAcceptError(response.data.err);
+        } else {
+          if (response.data.newToken) {
+            localStorage.setItem("token", response.data.newToken);
+          }
+          setAcceptError("");
+          setAcceptMessage(response.data.message);
+          setRecipe(() => {
+            const recipe_ = { ...recipe };
+            recipe_.data.r_accepted = 1;
+            return recipe_;
+          });
+        }
+        setAcceptLoading(false);
+      })
+      .catch((error) => {
+        setAcceptMessage("");
+        setAcceptError(error.message);
+        setAcceptLoading(false);
       });
   };
 
@@ -521,82 +557,6 @@ export default function RecipePage({ pageTransitions }) {
         </Modal.Footer>
       </Modal>
 
-      <Modal
-        show={showEditModal}
-        onHide={() => {
-          setShowEditModal(false);
-          setEditCommentError("");
-          setEditCommentMessage("");
-          setCommentContent("");
-          setCommentId("");
-        }}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {editCommentError
-              ? "Error!"
-              : editCommentMessage
-              ? "Success"
-              : "Update comment"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {editCommentError ? (
-            <Alert variant="danger">{editCommentError}</Alert>
-          ) : editCommentMessage ? (
-            <Alert variant="success">{editCommentMessage}</Alert>
-          ) : (
-            <FormControl
-              as="textarea"
-              rows="3"
-              placeholder="Write your comment here..."
-              aria-label="Write comment"
-              aria-describedby="basic-addon"
-              onChange={(event) => setCommentContent(event.target.value)}
-              value={commentContent}
-            />
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          {editCommentError || editCommentMessage ? (
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setShowEditModal(false);
-                setEditCommentError("");
-                setEditCommentMessage("");
-              }}
-            >
-              OK
-            </Button>
-          ) : (
-            <>
-              <Button
-                variant="info"
-                onClick={editComment}
-                disabled={editCommentLoading}
-              >
-                {editCommentLoading ? (
-                  <i className="fa fa-spinner fa-spin" />
-                ) : (
-                  "Update"
-                )}
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowEditModal(false);
-                  setCommentContent("");
-                  setCommentId("");
-                }}
-              >
-                Cancel
-              </Button>
-            </>
-          )}
-        </Modal.Footer>
-      </Modal>
-
       <div className="rate-toast">
         <Collapse in={rateToastShow}>
           <div>
@@ -628,6 +588,150 @@ export default function RecipePage({ pageTransitions }) {
         </Collapse>
       </div>
 
+      <Modal
+        show={showDeclineModal}
+        onHide={() => {
+          setShowDeclineModal(false);
+          setDeclineError("");
+          setDeclineMessage("");
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {declineError
+              ? "Error!"
+              : declineMessage
+              ? "Success"
+              : "Are you sure want to decline this recipe?"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {declineError ? (
+            <Alert variant="danger">{declineError}</Alert>
+          ) : declineMessage ? (
+            <Alert variant="success">{declineMessage}</Alert>
+          ) : (
+            <span
+              style={{
+                wordWrap: "break-word",
+                fontSize: "25px",
+                color: "#808080",
+              }}
+            >
+              {recipe && recipe.data.r_name}
+            </span>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          {declineError || declineMessage ? (
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowDeclineModal(false);
+                setDeclineError("");
+                setDeclineMessage("");
+              }}
+            >
+              OK
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="danger"
+                onClick={declineRecipe}
+                disabled={declineLoading}
+              >
+                {declineLoading ? (
+                  <i className="fa fa-spinner fa-spin" />
+                ) : (
+                  "Decline"
+                )}
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowDeclineModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showAcceptModal}
+        onHide={() => {
+          setShowAcceptModal(false);
+          setAcceptError("");
+          setAcceptMessage("");
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {acceptError
+              ? "Error!"
+              : acceptMessage
+              ? "Success"
+              : "Are you sure want to accept this recipe?"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {acceptError ? (
+            <Alert variant="danger">{acceptError}</Alert>
+          ) : acceptMessage ? (
+            <Alert variant="success">{acceptMessage}</Alert>
+          ) : (
+            <span
+              style={{
+                wordWrap: "break-word",
+                fontSize: "25px",
+                color: "#808080",
+              }}
+            >
+              {recipe && recipe.data.r_name}
+            </span>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          {acceptError || acceptMessage ? (
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowAcceptModal(false);
+                setAcceptError("");
+                setAcceptMessage("");
+              }}
+            >
+              OK
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="success"
+                onClick={acceptRecipe}
+                disabled={acceptLoading}
+              >
+                {acceptLoading ? (
+                  <i className="fa fa-spinner fa-spin" />
+                ) : (
+                  "Accept"
+                )}
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setShowAcceptModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+        </Modal.Footer>
+      </Modal>
+
       {loading ? (
         <h3 style={{ margin: "20px", textAlign: "center" }}>
           <i className="fa fa-spinner fa-spin" />
@@ -637,6 +741,79 @@ export default function RecipePage({ pageTransitions }) {
       ) : (
         <>
           <div className="recipe-page">
+            {user && user.u_is_admin === 1 && recipe.data.r_accepted === 1 && (
+              <Alert
+                style={{
+                  position: "sticky",
+                  top: "20px",
+                  zIndex: "1",
+                  opacity: "0.9",
+                }}
+                variant="success"
+              >
+                This recipe is accepted!{" "}
+                <Button
+                  onClick={() => setShowDeclineModal(true)}
+                  variant="danger"
+                >
+                  Decline
+                </Button>
+              </Alert>
+            )}
+            {user && user.u_is_admin === 1 && recipe.data.r_accepted === 0 && (
+              <Alert
+                style={{
+                  position: "sticky",
+                  top: "20px",
+                  zIndex: "1",
+                  opacity: "0.9",
+                }}
+                variant="danger"
+              >
+                This recipe was declined!{" "}
+                <Button
+                  onClick={() => setShowAcceptModal(true)}
+                  variant="success"
+                >
+                  Accept
+                </Button>
+              </Alert>
+            )}
+            {user && user.u_is_admin === 1 && recipe.data.r_accepted === -1 && (
+              <Alert
+                style={{
+                  position: "sticky",
+                  top: "20px",
+                  zIndex: "1",
+                  opacity: "0.9",
+                }}
+                variant="warning"
+              >
+                This recipe is pending...{" "}
+                <div
+                  style={{
+                    whiteSpace: "nowrap",
+                    display: "inline-block",
+                    marginTop: "10px",
+                  }}
+                >
+                  <Button
+                    onClick={() => setShowAcceptModal(true)}
+                    variant="success"
+                    style={{ margin: "0 10px" }}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    onClick={() => setShowDeclineModal(true)}
+                    variant="danger"
+                    style={{ margin: "0 10px" }}
+                  >
+                    Decline
+                  </Button>
+                </div>
+              </Alert>
+            )}
             <h1>{recipe.data.r_name}</h1>
             <span
               style={{
@@ -697,7 +874,13 @@ export default function RecipePage({ pageTransitions }) {
                     }}
                   >
                     If you want to rate please login!{" "}
-                    <Link style={{ color: "#0373fc" }} to="/login">
+                    <Link
+                      style={{ color: "#0373fc" }}
+                      to={{
+                        pathname: "/login",
+                        state: { prevPath: location.pathname },
+                      }}
+                    >
                       Click here to login!
                     </Link>
                   </Alert>
@@ -820,7 +1003,7 @@ export default function RecipePage({ pageTransitions }) {
                       {ingredient.g_name}, {ingredient.g_quantity}{" "}
                       {ingredient.g_quantity_type}{" "}
                       <span style={{ fontSize: "15px", color: "#424242" }}>
-                        ({Math.round(ingredient.i_price * 10) / 10} €)
+                        ({Math.round(ingredient.i_price * 100) / 100} €)
                       </span>
                     </li>
                   );
@@ -828,7 +1011,7 @@ export default function RecipePage({ pageTransitions }) {
               </ul>
               <h4 style={{ marginTop: "25px" }}>
                 <Badge variant="info">
-                  Price: {Math.round(recipe.data.price * 10) / 10} €
+                  Price: {Math.round(recipe.data.price * 100) / 100} €
                 </Badge>
               </h4>
             </div>
@@ -868,7 +1051,13 @@ export default function RecipePage({ pageTransitions }) {
             ) : (
               <Alert variant="secondary">
                 If you want comment please login!{" "}
-                <Link style={{ color: "#0373fc" }} to="/login">
+                <Link
+                  style={{ color: "#0373fc" }}
+                  to={{
+                    pathname: "/login",
+                    state: { prevPath: location.pathname },
+                  }}
+                >
                   Click here to login!
                 </Link>
               </Alert>
@@ -882,7 +1071,7 @@ export default function RecipePage({ pageTransitions }) {
                     setCommentMessage("");
                   }}
                   show={commentError || commentMessage}
-                  delay={5000}
+                  delay={10000}
                   className="toast"
                   autohide
                 >
@@ -923,7 +1112,7 @@ export default function RecipePage({ pageTransitions }) {
                         timeout={500}
                         classNames="item"
                       >
-                        <Card className="comment">
+                        <Card id={comment.r_comment_id} className="comment">
                           <Card.Header style={{ position: "relative" }}>
                             <div className="monogram small-monogram">
                               {comment.u_monogram}
@@ -942,28 +1131,16 @@ export default function RecipePage({ pageTransitions }) {
                               </span>
                             </span>
                             {user.u_id === comment.u_id && (
-                              <>
-                                <abbr title="Edit comment">
-                                  <i
-                                    className="fas fa-pen edit"
-                                    onClick={() => {
-                                      setCommentId(comment.r_comment_id);
-                                      setCommentContent(comment.r_comment);
-                                      setShowEditModal(true);
-                                    }}
-                                  />
-                                </abbr>
-                                <abbr title="Delete comment">
-                                  <i
-                                    className="fas fa-trash-alt delete"
-                                    onClick={() => {
-                                      setCommentId(comment.r_comment_id);
-                                      setCommentContent(comment.r_comment);
-                                      setShowDeleteModal(true);
-                                    }}
-                                  />
-                                </abbr>
-                              </>
+                              <abbr title="Delete comment">
+                                <i
+                                  className="fas fa-trash-alt delete"
+                                  onClick={() => {
+                                    setCommentId(comment.r_comment_id);
+                                    setCommentContent(comment.r_comment);
+                                    setShowDeleteModal(true);
+                                  }}
+                                />
+                              </abbr>
                             )}
                           </Card.Header>
                           <Card.Body>
@@ -985,12 +1162,8 @@ export default function RecipePage({ pageTransitions }) {
                             }}
                             className="text-muted"
                           >
-                            {comment.r_comment_created_at <
-                            comment.r_comment_modified_at
-                              ? "Modified at " +
-                                moment(comment.r_modified_created_at).calendar()
-                              : "Posted at " +
-                                moment(comment.r_comment_created_at).calendar()}
+                            Posted at{" "}
+                            {moment(comment.r_comment_created_at).calendar()}
                           </Card.Footer>
                         </Card>
                       </CSSTransition>

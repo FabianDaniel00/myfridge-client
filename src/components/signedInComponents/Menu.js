@@ -43,14 +43,15 @@ export default function Menu({ pageTransitions }) {
       });
   };
 
-  const removeFromWeeklyMenu = (m_id) => {
+  const removeFromWeeklyMenu = (r_id, day) => {
     if (!removeLoading) {
       setRemoveLoading(true);
       axios
         .post(
           "http://localhost:8080/recipes/remove_from_weekly_menu",
           {
-            m_id,
+            r_id,
+            day,
           },
           {
             headers: {
@@ -66,7 +67,11 @@ export default function Menu({ pageTransitions }) {
               localStorage.setItem("token", response.data.newToken);
             }
             if (response.data.removed) {
-              setRecipes(recipes.filter((recipe) => recipe.m_id !== m_id));
+              setRecipes(
+                recipes.filter(
+                  (recipe) => recipe.r_id !== r_id || recipe.day !== day
+                )
+              );
             }
           }
           setRemoveLoading(false);
@@ -115,10 +120,10 @@ export default function Menu({ pageTransitions }) {
                 <TransitionGroup style={{ display: "flex", flexWrap: "wrap" }}>
                   {recipes
                     .filter((recipe) => parseInt(recipe.day) === 1)
-                    .map((recipe) => {
+                    .map((recipe, index) => {
                       return (
                         <CSSTransition
-                          key={recipe.m_id}
+                          key={index}
                           timeout={500}
                           classNames="item"
                           className="recipe-day"
@@ -127,7 +132,9 @@ export default function Menu({ pageTransitions }) {
                             <abbr
                               title="Click here to remove from weekly menu"
                               className="remove-recipe"
-                              onClick={() => removeFromWeeklyMenu(recipe.m_id)}
+                              onClick={() =>
+                                removeFromWeeklyMenu(recipe.r_id, recipe.day)
+                              }
                             >
                               <i className="fas fa-minus-circle" />
                             </abbr>
@@ -188,10 +195,10 @@ export default function Menu({ pageTransitions }) {
                 <TransitionGroup style={{ display: "flex", flexWrap: "wrap" }}>
                   {recipes
                     .filter((recipe) => parseInt(recipe.day) === 2)
-                    .map((recipe) => {
+                    .map((recipe, index) => {
                       return (
                         <CSSTransition
-                          key={recipe.m_id}
+                          key={index}
                           timeout={500}
                           classNames="item"
                           className="recipe-day"
@@ -200,7 +207,9 @@ export default function Menu({ pageTransitions }) {
                             <abbr
                               title="Click here to remove from weekly menu"
                               className="remove-recipe"
-                              onClick={() => removeFromWeeklyMenu(recipe.m_id)}
+                              onClick={() =>
+                                removeFromWeeklyMenu(recipe.r_id, recipe.day)
+                              }
                             >
                               <i className="fas fa-minus-circle" />
                             </abbr>
@@ -261,10 +270,10 @@ export default function Menu({ pageTransitions }) {
                 <TransitionGroup style={{ display: "flex", flexWrap: "wrap" }}>
                   {recipes
                     .filter((recipe) => parseInt(recipe.day) === 3)
-                    .map((recipe) => {
+                    .map((recipe, index) => {
                       return (
                         <CSSTransition
-                          key={recipe.m_id}
+                          key={index}
                           timeout={500}
                           classNames="item"
                           className="recipe-day"
@@ -273,7 +282,9 @@ export default function Menu({ pageTransitions }) {
                             <abbr
                               title="Click here to remove from weekly menu"
                               className="remove-recipe"
-                              onClick={() => removeFromWeeklyMenu(recipe.m_id)}
+                              onClick={() =>
+                                removeFromWeeklyMenu(recipe.r_id, recipe.day)
+                              }
                             >
                               <i className="fas fa-minus-circle" />
                             </abbr>
@@ -334,10 +345,10 @@ export default function Menu({ pageTransitions }) {
                 <TransitionGroup style={{ display: "flex", flexWrap: "wrap" }}>
                   {recipes
                     .filter((recipe) => parseInt(recipe.day) === 4)
-                    .map((recipe) => {
+                    .map((recipe, index) => {
                       return (
                         <CSSTransition
-                          key={recipe.m_id}
+                          key={index}
                           timeout={500}
                           classNames="item"
                           className="recipe-day"
@@ -346,7 +357,9 @@ export default function Menu({ pageTransitions }) {
                             <abbr
                               title="Click here to remove from weekly menu"
                               className="remove-recipe"
-                              onClick={() => removeFromWeeklyMenu(recipe.m_id)}
+                              onClick={() =>
+                                removeFromWeeklyMenu(recipe.r_id, recipe.day)
+                              }
                             >
                               <i className="fas fa-minus-circle" />
                             </abbr>
@@ -407,10 +420,10 @@ export default function Menu({ pageTransitions }) {
                 <TransitionGroup style={{ display: "flex", flexWrap: "wrap" }}>
                   {recipes
                     .filter((recipe) => parseInt(recipe.day) === 5)
-                    .map((recipe) => {
+                    .map((recipe, index) => {
                       return (
                         <CSSTransition
-                          key={recipe.m_id}
+                          key={index}
                           timeout={500}
                           classNames="item"
                           className="recipe-day"
@@ -419,7 +432,9 @@ export default function Menu({ pageTransitions }) {
                             <abbr
                               title="Click here to remove from weekly menu"
                               className="remove-recipe"
-                              onClick={() => removeFromWeeklyMenu(recipe.m_id)}
+                              onClick={() =>
+                                removeFromWeeklyMenu(recipe.r_id, recipe.day)
+                              }
                             >
                               <i className="fas fa-minus-circle" />
                             </abbr>
@@ -480,10 +495,10 @@ export default function Menu({ pageTransitions }) {
                 <TransitionGroup style={{ display: "flex", flexWrap: "wrap" }}>
                   {recipes
                     .filter((recipe) => parseInt(recipe.day) === 6)
-                    .map((recipe) => {
+                    .map((recipe, index) => {
                       return (
                         <CSSTransition
-                          key={recipe.m_id}
+                          key={index}
                           timeout={500}
                           classNames="item"
                           className="recipe-day"
@@ -492,7 +507,9 @@ export default function Menu({ pageTransitions }) {
                             <abbr
                               title="Click here to remove from weekly menu"
                               className="remove-recipe"
-                              onClick={() => removeFromWeeklyMenu(recipe.m_id)}
+                              onClick={() =>
+                                removeFromWeeklyMenu(recipe.r_id, recipe.day)
+                              }
                             >
                               <i className="fas fa-minus-circle" />
                             </abbr>
@@ -553,10 +570,10 @@ export default function Menu({ pageTransitions }) {
                 <TransitionGroup style={{ display: "flex", flexWrap: "wrap" }}>
                   {recipes
                     .filter((recipe) => parseInt(recipe.day) === 7)
-                    .map((recipe) => {
+                    .map((recipe, index) => {
                       return (
                         <CSSTransition
-                          key={recipe.m_id}
+                          key={index}
                           timeout={500}
                           classNames="item"
                           className="recipe-day"
@@ -565,7 +582,9 @@ export default function Menu({ pageTransitions }) {
                             <abbr
                               title="Click here to remove from weekly menu"
                               className="remove-recipe"
-                              onClick={() => removeFromWeeklyMenu(recipe.m_id)}
+                              onClick={() =>
+                                removeFromWeeklyMenu(recipe.r_id, recipe.day)
+                              }
                             >
                               <i className="fas fa-minus-circle" />
                             </abbr>

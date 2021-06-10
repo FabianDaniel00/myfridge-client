@@ -1,5 +1,5 @@
 .favorite-recipes {
-  width: calc(100vw - 307px);
+  display: grid;
   margin-top: 20px;
 }
 
@@ -24,10 +24,4 @@ td {
 .days {
   position: absolute;
   top: 0;
-}
-
-@media only screen and (max-width: 480px) {
-  .favorite-recipes {
-    width: calc(100vw - 10px);
-  }
 }

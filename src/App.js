@@ -21,6 +21,7 @@ import MyFridge from "./components/signedInComponents/MyFridge.js";
 import ProfilePage from "./components/signedInComponents/ProfilePage.js";
 import FavoriteRecipes from "./components/signedInComponents/FavoriteRecipes.js";
 import Menu from "./components/signedInComponents/Menu.js";
+import Admin from "./components/admin/Admin.js";
 
 function App() {
   const [user, setUser] = useState("");
@@ -188,6 +189,14 @@ function App() {
                   <Route path="/weekly_menu">
                     {user ? (
                       <Menu pageTransitions={pageTransitions} />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+
+                  <Route path="/admin">
+                    {user && user.u_is_admin ? (
+                      <Admin pageTransitions={pageTransitions} />
                     ) : (
                       <Redirect to="/login" />
                     )}

@@ -1,10 +1,24 @@
-import { useState, useContext } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useContext, useEffect } from "react";
 import UserContext from "../../user/UserContext.js";
 import { motion } from "framer-motion";
 import "../../style/ProfilePage.scss";
 import moment from "moment";
-import { Modal, Button, Form, Collapse, Toast, Alert } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import {
+  Modal,
+  Button,
+  Form,
+  Collapse,
+  Toast,
+  Alert,
+  Card,
+  CardDeck,
+  ListGroup,
+  ListGroupItem,
+} from "react-bootstrap";
 import axios from "axios";
+import defaultRecipe from "../../img/recipe_default.png";
 
 export default function ProfilePage({ pageTransitions }) {
   const { user, setUser } = useContext(UserContext);
@@ -37,6 +51,95 @@ export default function ProfilePage({ pageTransitions }) {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
+  const [usersRecipes, setUsersRecipes] = useState([]);
+  const [usersRecipesLoading, setUsersRecipesLoading] = useState(true);
+  const [usersRecipesError, setUsersRecipesError] = useState("");
+  const [ratings, setRatings] = useState("");
+
+  useEffect(() => {
+    getUsersRecipes();
+  }, []);
+
+  const getUsersRecipes = () => {
+    axios
+      .get("http://localhost:8080/users/get_users_recipes", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.data.err) {
+          setUsersRecipesError(response.data.err);
+        } else {
+          if (response.data.newToken) {
+            localStorage.setItem("token", response.data.newToken);
+          }
+          setUsersRecipes(response.data.recipes);
+
+          const ratings_ = [];
+          const recipesCount = response.data.recipes.length;
+          for (let i = 0; i < recipesCount; i++) {
+            const recipeRating =
+              Math.round(response.data.recipes[i].rating * 10) / 10;
+            ratings_.push([recipeRating + " "]);
+            let halfStar = true;
+            for (let j = 0; j < 5; j++) {
+              if (j < Math.floor(recipeRating)) {
+                ratings_[i].push(
+                  <i
+                    key={`${i}${j}`}
+                    style={{ color: "#d54215" }}
+                    className="fa fa-star"
+                  />
+                );
+              } else if (
+                recipeRating - Math.floor(recipeRating) >= 0.3 &&
+                recipeRating - Math.floor(recipeRating) <= 0.7 &&
+                halfStar
+              ) {
+                ratings_[i].push(
+                  <i
+                    key={`${i}${j}`}
+                    style={{ color: "#d54215" }}
+                    className="fas fa-star-half-alt"
+                  />
+                );
+                halfStar = false;
+              } else if (recipeRating) {
+                ratings_[i].push(
+                  <i
+                    key={`${i}${j}`}
+                    style={{ color: "#d54215" }}
+                    className="far fa-star"
+                  />
+                );
+              }
+            }
+          }
+          setRatings(ratings_);
+        }
+        setUsersRecipesLoading(false);
+      })
+      .catch((error) => {
+        usersRecipesError(error.message);
+        usersRecipesLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    setTimeout(imageSizes, 300);
+  }, [usersRecipesLoading]);
+
+  const imageSizes = () => {
+    const cardImages = document.getElementsByClassName("card-image");
+    const length = cardImages.length;
+    for (let i = 0; i < length; i++) {
+      const width = cardImages[i].getBoundingClientRect().width;
+      cardImages[i].style.height = Math.round(width / 1.59) + "px";
+    }
+  };
+
+  window.addEventListener("resize", imageSizes);
 
   const changeFName = () => {
     setFNameLoading(true);
@@ -622,7 +725,7 @@ export default function ProfilePage({ pageTransitions }) {
 
       <h1 style={{ marginBottom: "40px", marginLeft: "20px" }}>Profile Page</h1>
       <div className="user-page">
-        <div className="monogram">{user.u_monogram}</div>
+        <div className="monogram-profile">{user.u_monogram}</div>
 
         <div className="user-i">
           <div>
@@ -656,7 +759,9 @@ export default function ProfilePage({ pageTransitions }) {
 
             <div style={{ position: "relative", margin: "10px 0" }}>
               Phone number:{" "}
-              <span style={{ color: "#17a2b8" }}>{user.u_tel}</span>
+              <span style={{ color: "#17a2b8" }}>
+                {user.u_tel ? user.u_tel : "/"}
+              </span>
               <i onClick={() => setShowTel(true)} className="edit-page">
                 Edit
               </i>
@@ -682,6 +787,147 @@ export default function ProfilePage({ pageTransitions }) {
           </div>
         </div>
       </div>
+
+      <h3 style={{ margin: "50px 20px 20px 20px" }}>Your recipes:</h3>
+
+      {usersRecipesLoading ? (
+        <h3 style={{ margin: "20px", textAlign: "center" }}>
+          <i className="fa fa-spinner fa-spin" />
+        </h3>
+      ) : usersRecipesError ? (
+        <h4 style={{ margin: "20px", textAlign: "center" }}>
+          {usersRecipesError}
+        </h4>
+      ) : (
+        <CardDeck style={{ margin: "0", justifyContent: "center" }}>
+          {usersRecipes.length ? (
+            usersRecipes.map((recipe, index) => {
+              return (
+                <Card
+                  key={recipe.recipe_id}
+                  style={{
+                    marginBottom: "20px",
+                  }}
+                  className="recipe-card"
+                >
+                  <Link
+                    className="recipe-link"
+                    to={`/recipe/${recipe.recipe_id}`}
+                  >
+                    <Card.Img
+                      variant="top"
+                      src={
+                        recipe.r_pic
+                          ? `data:image/png;base64,${recipe.r_pic}`
+                          : defaultRecipe
+                      }
+                      alt={recipe.recipe_id}
+                      className="card-image"
+                    />
+                    <Card.Body>
+                      <Card.Title>{recipe.r_name}</Card.Title>
+                      <Card.Text>
+                        {recipe.r_description.length > 100 ? (
+                          <>
+                            <span>
+                              {recipe.r_description.substring(0, 100)}
+                            </span>
+                            <span style={{ color: "#999" }}>...</span>
+                          </>
+                        ) : (
+                          recipe.r_description
+                        )}
+                      </Card.Text>
+                    </Card.Body>
+                    <ListGroup className="list-group-flush">
+                      <ListGroupItem>
+                        Price: {Math.round(recipe.price * 100) / 100} €
+                      </ListGroupItem>
+                      <ListGroupItem>{recipe.r_cat_name}</ListGroupItem>
+                      <ListGroupItem>
+                        {recipe.u_f_name} {recipe.u_l_name}
+                      </ListGroupItem>
+                      <ListGroupItem style={{ fontSize: "14px" }}>
+                        {Math.round(recipe.rating * 10) / 10 === 0 ? (
+                          "There is no rating yet."
+                        ) : (
+                          <span>
+                            Overall rating of <i>{recipe.ratings_count}</i> is{" "}
+                            {ratings[index].map((star) => {
+                              return star;
+                            })}
+                          </span>
+                        )}
+                      </ListGroupItem>
+                      {user && (
+                        <ListGroupItem>
+                          {recipe.is_favorite ? (
+                            <span
+                              style={{
+                                color: "#636363",
+                                fontSize: "13px",
+                                display: "flex",
+                                alignItems: "center",
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <span style={{ marginRight: "5px" }}>
+                                Your favorite
+                              </span>
+                              <i className="fas fa-heart card-favorite favorite" />
+                            </span>
+                          ) : (
+                            <span
+                              style={{
+                                color: "#636363",
+                                fontSize: "13px",
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <span style={{ marginRight: "5px" }}>
+                                Not your favorite
+                              </span>
+                              <i className="far fa-heart favorite card-favorite not-favorite" />
+                            </span>
+                          )}
+                        </ListGroupItem>
+                      )}
+                    </ListGroup>
+                    <Card.Footer
+                      style={{
+                        bottom: "0",
+                        position: "absolute",
+                        width: "100%",
+                      }}
+                    >
+                      <small className="text-muted">
+                        Posted at {moment(recipe.r_created_at).calendar()}
+                      </small>
+                    </Card.Footer>
+                  </Link>
+                </Card>
+              );
+            })
+          ) : (
+            <span style={{ marginLeft: "40px", color: "#757575" }}>
+              You don't have any recipe added!
+            </span>
+          )}
+          <div
+            style={{ minWidth: "300px", flex: "1 0", margin: "0 15px" }}
+          ></div>
+          <div
+            style={{ minWidth: "300px", flex: "1 0", margin: "0 15px" }}
+          ></div>
+          <div
+            style={{ minWidth: "300px", flex: "1 0", margin: "0 15px" }}
+          ></div>
+          <div
+            style={{ minWidth: "300px", flex: "1 0", margin: "0 15px" }}
+          ></div>
+        </CardDeck>
+      )}
     </motion.div>
   );
 }

@@ -211,11 +211,7 @@ export default function PasswordReset({ pageTransitions }) {
                       alt=""
                     /> */}
                 <strong className="mr-auto">
-                  {confirmError
-                    ? "confirmError!"
-                    : confirmMessage
-                    ? "Success"
-                    : null}
+                  {confirmError ? "Error!" : confirmMessage ? "Success" : null}
                 </strong>
               </Toast.Header>
               <Toast.Body>
@@ -234,38 +230,6 @@ export default function PasswordReset({ pageTransitions }) {
             </Toast>
           </div>
         </Collapse>
-
-        {/* {confirmError ? (
-          <motion.div
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransitions.pageVariants}
-            transition={pageTransitions.pageTransition}
-          >
-            <Alert style={{ marginTop: "20px" }} variant="danger">
-              {confirmError}
-            </Alert>
-          </motion.div>
-        ) : (
-          confirmMessage && (
-            <motion.div
-              initial="out"
-              animate="in"
-              exit="out"
-              variants={pageTransitions.pageVariants}
-              transition={pageTransitions.pageTransition}
-            >
-              <Alert style={{ marginTop: "20px" }} variant="success">
-                {confirmMessage}
-                <br />
-                <Link className="link" to="/login">
-                  <i className="fa fa-sign-in-alt" /> Click here login.
-                </Link>
-              </Alert>
-            </motion.div>
-          )
-        )} */}
       </Form>
     </motion.div>
   );

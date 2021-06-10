@@ -66,6 +66,7 @@ export default function MyFridge({ pageTransitions }) {
                 ...pagination,
                 <Pagination.Item
                   onClick={() => {
+                    window.scrollTo(0, 0);
                     redirect.push(`/my_fridge/${i}/${ingredients_}`);
                   }}
                   key={i}
@@ -309,7 +310,7 @@ export default function MyFridge({ pageTransitions }) {
           textAlign: "center",
         }}
       >
-        MyFridge
+        My Fridge
       </h1>
       <div
         style={{
@@ -624,12 +625,14 @@ export default function MyFridge({ pageTransitions }) {
               <Pagination style={{ justifyContent: "center" }}>
                 <Pagination.First
                   onClick={() => {
+                    window.scrollTo(0, 0);
                     redirect.push(`/my_fridge/1/${ingredients}`);
                   }}
                 />
                 <Pagination.Prev
                   onClick={() => {
                     if (parseInt(page) > 1) {
+                      window.scrollTo(0, 0);
                       redirect.push(
                         `/my_fridge/${parseInt(page) - 1}/${ingredients}`
                       );
@@ -640,6 +643,7 @@ export default function MyFridge({ pageTransitions }) {
                 <Pagination.Next
                   onClick={() => {
                     if (parseInt(page) < pagination.length) {
+                      window.scrollTo(0, 0);
                       redirect.push(
                         `/my_fridge/${parseInt(page) + 1}/${ingredients}`
                       );
@@ -648,6 +652,7 @@ export default function MyFridge({ pageTransitions }) {
                 />
                 <Pagination.Last
                   onClick={() => {
+                    window.scrollTo(0, 0);
                     redirect.push(
                       `/my_fridge/${pagination.length}/${ingredients}`
                     );

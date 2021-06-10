@@ -42,6 +42,7 @@ export default function RecipeCards() {
               ...pagination,
               <Pagination.Item
                 onClick={() => {
+                  window.scrollTo(0, 0);
                   redirect.push(`/recipes/${category}/${i}/${search}`);
                 }}
                 key={i}
@@ -256,12 +257,14 @@ export default function RecipeCards() {
           <Pagination style={{ justifyContent: "center" }}>
             <Pagination.First
               onClick={() => {
+                window.scrollTo(0, 0);
                 redirect.push(`/recipes/${category}/1/${search}`);
               }}
             />
             <Pagination.Prev
               onClick={() => {
                 if (parseInt(page) > 1) {
+                  window.scrollTo(0, 0);
                   redirect.push(
                     `/recipes/${category}/${parseInt(page) - 1}/${search}`
                   );
@@ -272,6 +275,7 @@ export default function RecipeCards() {
             <Pagination.Next
               onClick={() => {
                 if (parseInt(page) < pagination.length) {
+                  window.scrollTo(0, 0);
                   redirect.push(
                     `/recipes/${category}/${parseInt(page) + 1}/${search}`
                   );
@@ -280,6 +284,7 @@ export default function RecipeCards() {
             />
             <Pagination.Last
               onClick={() => {
+                window.scrollTo(0, 0);
                 redirect.push(
                   `/recipes/${category}/${pagination.length}/${search}`
                 );

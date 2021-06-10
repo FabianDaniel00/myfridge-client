@@ -48,7 +48,10 @@ const NavBar = () => {
       >
         <Navbar.Brand>
           <NavLink
-            onClick={() => setNavExpanded(false)}
+            onClick={() => {
+              setNavExpanded(false);
+              window.scrollTo(0, 0);
+            }}
             className="top-nav-link"
             to="/recipes/all/1/all"
           >
@@ -57,21 +60,31 @@ const NavBar = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         {user && (
-          <NavLink to="/profile_page" className="monogram-navbar">
+          <NavLink
+            onClick={window.scrollTo(0, 0)}
+            to="/profile_page"
+            className="monogram-navbar"
+          >
             {user.u_monogram}
           </NavLink>
         )}
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
             <NavLink
-              onClick={() => setNavExpanded(false)}
+              onClick={() => {
+                setNavExpanded(false);
+                window.scrollTo(0, 0);
+              }}
               className="nav-link"
               to="/recipes/all/1/all"
             >
               <i className="fa fa-home" /> Home
             </NavLink>
             <NavLink
-              onClick={() => setNavExpanded(false)}
+              onClick={() => {
+                setNavExpanded(false);
+                window.scrollTo(0, 0);
+              }}
               className="nav-link"
               to="/recipe_categories"
             >
@@ -80,7 +93,10 @@ const NavBar = () => {
             {user ? (
               <>
                 <NavLink
-                  onClick={() => setNavExpanded(false)}
+                  onClick={() => {
+                    setNavExpanded(false);
+                    window.scrollTo(0, 0);
+                  }}
                   className="nav-link"
                   to="/add_recipe"
                 >
@@ -88,7 +104,10 @@ const NavBar = () => {
                 </NavLink>
 
                 <NavLink
-                  onClick={() => setNavExpanded(false)}
+                  onClick={() => {
+                    setNavExpanded(false);
+                    window.scrollTo(0, 0);
+                  }}
                   className="nav-link"
                   to="/my_fridge"
                 >
@@ -96,7 +115,10 @@ const NavBar = () => {
                 </NavLink>
 
                 <NavLink
-                  onClick={() => setNavExpanded(false)}
+                  onClick={() => {
+                    setNavExpanded(false);
+                    window.scrollTo(0, 0);
+                  }}
                   className="nav-link"
                   to="/favorite_recipes"
                 >
@@ -104,12 +126,29 @@ const NavBar = () => {
                 </NavLink>
 
                 <NavLink
-                  onClick={() => setNavExpanded(false)}
+                  onClick={() => {
+                    setNavExpanded(false);
+                    window.scrollTo(0, 0);
+                  }}
                   className="nav-link"
                   to="/weekly_menu"
                 >
                   <i className="fas fa-calendar-week" /> Weekly Menu
                 </NavLink>
+
+                {user.u_is_admin ? (
+                  <NavLink
+                    onClick={() => {
+                      setNavExpanded(false);
+                      window.scrollTo(0, 0);
+                    }}
+                    className="nav-link"
+                    to="/admin"
+                    style={{ color: "#424ef5" }}
+                  >
+                    <i className="fas fa-user-cog" /> Admin
+                  </NavLink>
+                ) : null}
 
                 <div onClick={() => setNavExpanded(false)}>
                   <Logout navbar={true} />
@@ -118,14 +157,20 @@ const NavBar = () => {
             ) : (
               <>
                 <NavLink
-                  onClick={() => setNavExpanded(false)}
+                  onClick={() => {
+                    setNavExpanded(false);
+                    window.scrollTo(0, 0);
+                  }}
                   className="nav-link"
                   to="/login"
                 >
                   <i className="fa fa-sign-in-alt" /> Login
                 </NavLink>
                 <NavLink
-                  onClick={() => setNavExpanded(false)}
+                  onClick={() => {
+                    setNavExpanded(false);
+                    window.scrollTo(0, 0);
+                  }}
                   className="nav-link"
                   to="/register"
                 >

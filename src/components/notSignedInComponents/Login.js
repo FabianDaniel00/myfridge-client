@@ -33,9 +33,13 @@ function Login({ pageTransitions }) {
           setError(response.data.err);
           setLoading(false);
         } else {
-          setUser(response.data.user);
           localStorage.setItem("token", response.data.token);
-          redirect.push("/");
+          if (redirect.location.state) {
+            redirect.push(redirect.location.state.prevPath);
+          } else {
+            redirect.push("/");
+          }
+          setUser(response.data.user);
         }
       })
       .catch((error) => {

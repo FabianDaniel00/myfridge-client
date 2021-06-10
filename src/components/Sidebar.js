@@ -72,7 +72,11 @@ const Sidebar = () => {
     <div className="sidebar">
       <CDBSidebar textColor="#fff" backgroundColor="#17a2b8" id="sidebar">
         {user && (
-          <Link to="/profile_page" className="profile-sidebar">
+          <Link
+            onClick={window.scrollTo(0, 0)}
+            to="/profile_page"
+            className="profile-sidebar"
+          >
             <div id="monogram" className="monogram-sidebar">
               <b>{user.u_monogram}</b>
             </div>
@@ -96,6 +100,7 @@ const Sidebar = () => {
             to="/recipes/all/1/all"
             style={{ transition: "0.3s" }}
             className="text-decoration-none"
+            onClick={window.scrollTo(0, 0)}
           >
             myFridge
           </Link>
@@ -103,7 +108,11 @@ const Sidebar = () => {
 
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarMenu>
-            <NavLink exact to="/recipes/all/1/all">
+            <NavLink
+              onClick={window.scrollTo(0, 0)}
+              exact
+              to="/recipes/all/1/all"
+            >
               <CDBSidebarMenuItem
                 className={`opacity ${
                   location === "recipes" ? "active-sidebar" : ""
@@ -118,6 +127,7 @@ const Sidebar = () => {
               exact
               to="/recipe_categories"
               activeClassName="activeClicked"
+              onClick={window.scrollTo(0, 0)}
             >
               <CDBSidebarMenuItem
                 className="opacity"
@@ -131,13 +141,23 @@ const Sidebar = () => {
 
             {user ? (
               <>
-                <NavLink exact to="/add_recipe" activeClassName="activeClicked">
+                <NavLink
+                  onClick={window.scrollTo(0, 0)}
+                  exact
+                  to="/add_recipe"
+                  activeClassName="activeClicked"
+                >
                   <CDBSidebarMenuItem className="opacity" icon="fas fa-plus">
                     Add Recipe
                   </CDBSidebarMenuItem>
                 </NavLink>
 
-                <NavLink exact to="/my_fridge" activeClassName="activeClicked">
+                <NavLink
+                  onClick={window.scrollTo(0, 0)}
+                  exact
+                  to="/my_fridge"
+                  activeClassName="activeClicked"
+                >
                   <CDBSidebarMenuItem
                     className="opacity"
                     icon="fas fa-utensils"
@@ -150,6 +170,7 @@ const Sidebar = () => {
                   exact
                   to="/favorite_recipes"
                   activeClassName="activeClicked"
+                  onClick={window.scrollTo(0, 0)}
                 >
                   <CDBSidebarMenuItem className="opacity" icon="fas fa-heart">
                     Favorite Recipes
@@ -160,6 +181,7 @@ const Sidebar = () => {
                   exact
                   to="/weekly_menu"
                   activeClassName="activeClicked"
+                  onClick={window.scrollTo(0, 0)}
                 >
                   <CDBSidebarMenuItem
                     className="opacity"
@@ -168,16 +190,42 @@ const Sidebar = () => {
                     Weekly Menu
                   </CDBSidebarMenuItem>
                 </NavLink>
+
+                {user.u_is_admin ? (
+                  <NavLink
+                    exact
+                    to="/admin"
+                    activeClassName="activeClicked"
+                    onClick={window.scrollTo(0, 0)}
+                  >
+                    <CDBSidebarMenuItem
+                      className="opacity"
+                      icon="fas fa-user-cog"
+                    >
+                      Admin Page
+                    </CDBSidebarMenuItem>
+                  </NavLink>
+                ) : null}
               </>
             ) : (
               <>
-                <NavLink exact to="/login" activeClassName="activeClicked">
+                <NavLink
+                  onClick={window.scrollTo(0, 0)}
+                  exact
+                  to="/login"
+                  activeClassName="activeClicked"
+                >
                   <CDBSidebarMenuItem className="opacity" icon="sign-in-alt">
                     Login
                   </CDBSidebarMenuItem>
                 </NavLink>
 
-                <NavLink exact to="/register" activeClassName="activeClicked">
+                <NavLink
+                  onClick={window.scrollTo(0, 0)}
+                  exact
+                  to="/register"
+                  activeClassName="activeClicked"
+                >
                   <CDBSidebarMenuItem className="opacity" icon="id-card">
                     Register
                   </CDBSidebarMenuItem>
