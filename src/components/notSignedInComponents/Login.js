@@ -57,7 +57,7 @@ function Login({ pageTransitions }) {
       variants={pageTransitions.pageVariants}
       transition={pageTransitions.pageTransition}
     >
-      <h1 style={{ margin: "40px 0" }}>Login</h1>
+      <h1 style={{ margin: "40px 0", textAlign: "center" }}>Login</h1>
       <Form onSubmit={(event) => login(event)}>
         <Form.Group controlId="formLoginEmail">
           <Form.Label>Email address</Form.Label>

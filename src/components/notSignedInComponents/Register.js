@@ -68,7 +68,7 @@ function Register({ pageTransitions }) {
       variants={pageTransitions.pageVariants}
       transition={pageTransitions.pageTransition}
     >
-      <h1 style={{ margin: "20px 0" }}>Register</h1>
+      <h1 style={{ margin: "20px 0", textAlign: "center" }}>Register</h1>
       <Form onSubmit={(event) => register(event)}>
         <Form.Group controlId="formFNamePassword">
           <Form.Label>

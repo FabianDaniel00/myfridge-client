@@ -275,7 +275,7 @@ export default function FavoriteRecipes({ pageTransitions }) {
                               ? "Friday"
                               : day.day === "6"
                               ? "Saturday"
-                              : day.day === "7"
+                              : day.day === "0"
                               ? "Sunday"
                               : null}
                             {index !==
@@ -308,7 +308,7 @@ export default function FavoriteRecipes({ pageTransitions }) {
               <option value="4">Thursday</option>
               <option value="5">Friday</option>
               <option value="6">Saturday</option>
-              <option value="7">Sunday</option>
+              <option value="0">Sunday</option>
             </Form.Control>
           </Form.Group>
         </Modal.Body>

@@ -1,0 +1,19 @@
+.chart {
+  margin: 50px 10px 10px 10px;
+  display: block !important;
+  width: 50vw;
+  transition: 0.5s;
+  max-width: 1200px;
+}
+
+@media only screen and (max-width: 720px) {
+  .chart {
+    width: 70vw;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .chart {
+    width: 90vw;
+  }
+}

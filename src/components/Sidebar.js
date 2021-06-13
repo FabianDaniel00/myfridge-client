@@ -155,7 +155,7 @@ const Sidebar = () => {
                 <NavLink
                   onClick={window.scrollTo(0, 0)}
                   exact
-                  to="/my_fridge"
+                  to="/my_fridge/1"
                   activeClassName="activeClicked"
                 >
                   <CDBSidebarMenuItem
@@ -191,6 +191,20 @@ const Sidebar = () => {
                   </CDBSidebarMenuItem>
                 </NavLink>
 
+                <NavLink
+                  exact
+                  to="/groceries_chart"
+                  activeClassName="activeClicked"
+                  onClick={window.scrollTo(0, 0)}
+                >
+                  <CDBSidebarMenuItem
+                    className="opacity"
+                    icon="fas fa-chart-bar"
+                  >
+                    Groceries Chart
+                  </CDBSidebarMenuItem>
+                </NavLink>
+
                 {user.u_is_admin ? (
                   <NavLink
                     exact
@@ -201,6 +215,7 @@ const Sidebar = () => {
                     <CDBSidebarMenuItem
                       className="opacity"
                       icon="fas fa-user-cog"
+                      style={{ color: "#424ef5" }}
                     >
                       Admin Page
                     </CDBSidebarMenuItem>

@@ -559,17 +559,17 @@ export default function Menu({ pageTransitions }) {
             )}
           </CardGroup>
         </Tab>
-        <Tab className="week-tab" eventKey="7" title="Sunday">
+        <Tab className="week-tab" eventKey="0" title="Sunday">
           <CardGroup style={{ marginTop: "10px", maxWidth: "1000px" }}>
             {recipesLoading ? (
               <i style={{ margin: "20px" }} className="fa fa-spinner fa-spin" />
             ) : recipesError ? (
               <span style={{ margin: "20px" }}>{recipesError}</span>
             ) : recipes.length ? (
-              recipes.filter((recipe) => parseInt(recipe.day) === 7).length ? (
+              recipes.filter((recipe) => parseInt(recipe.day) === 0).length ? (
                 <TransitionGroup style={{ display: "flex", flexWrap: "wrap" }}>
                   {recipes
-                    .filter((recipe) => parseInt(recipe.day) === 7)
+                    .filter((recipe) => parseInt(recipe.day) === 0)
                     .map((recipe, index) => {
                       return (
                         <CSSTransition

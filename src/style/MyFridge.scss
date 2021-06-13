@@ -62,4 +62,9 @@
   width: 330px;
   background-size: cover;
   padding: 20px;
+  overflow: auto;
+}
+
+.basic-single {
+  min-width: 300px;
 }

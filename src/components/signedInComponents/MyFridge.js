@@ -16,15 +16,17 @@ import {
   Button,
   FormControl,
   Modal,
+  Form,
 } from "react-bootstrap";
 import { motion } from "framer-motion";
 import moment from "moment";
+import Select from "react-select";
 import defaultRecipe from "../../img/recipe_default.png";
 
 export default function MyFridge({ pageTransitions }) {
   const redirect = useHistory();
 
-  const { page, ingredients } = useParams();
+  const { page } = useParams();
 
   const [recipes, setRecipes] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,93 +40,117 @@ export default function MyFridge({ pageTransitions }) {
   const [groceriesError, setGroceriesError] = useState("");
   const [groceryInput, setGroceryInput] = useState("");
   const [warningToastShow, setWarningToastShow] = useState(false);
+  const [fridgeUpdateLoading, setFridgeUpdateLoading] = useState(false);
+  const [fridgeUpdateError, setFridgeUpdateError] = useState("");
+  const [fridgeUpdateMessage, setFridgeUpdateMessage] = useState("");
+  const [email, setEmail] = useState(0);
+  const [message, setMessage] = useState("");
+  const [usersData, setUsersData] = useState([]);
+  const [usersDataLoading, setUsersDataLoading] = useState(false);
 
-  const getRecipes = (page_ = page, ingredients_ = ingredients) => {
-    if (page_ && ingredients_) {
-      setLoading(true);
-      axios
-        .get(
-          `http://localhost:8080/recipes/r/r/my_fridge/${page_}/${ingredients_}`,
-          {
-            headers: {
-              "x-access-token": localStorage.getItem("token"),
-            },
+  const getRecipes = (page, ingredients) => {
+    setLoading(true);
+    axios
+      .get(
+        `http://localhost:8080/recipes/r/r/my_fridge/${page}/${ingredients}/${
+          !email ? 0 : email
+        }`,
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.err) {
+          setError(response.data.err);
+        } else {
+          if (response.data.newToken) {
+            localStorage.setItem("token", response.data.newToken);
           }
-        )
-        .then((response) => {
-          if (response.data.err) {
-            setError(response.data.err);
-          } else {
-            if (response.data.newToken) {
-              localStorage.setItem("token", response.data.newToken);
-            }
-            setRecipes(response.data.recipes);
-            const pageCount = Math.ceil(response.data.recipesCount / 10);
-            setPagination([]);
-            for (let i = 1; i <= pageCount; i++) {
-              setPagination((pagination) => [
-                ...pagination,
-                <Pagination.Item
-                  onClick={() => {
-                    window.scrollTo(0, 0);
-                    redirect.push(`/my_fridge/${i}/${ingredients_}`);
-                  }}
-                  key={i}
-                  active={i === parseInt(page_)}
-                >
-                  {i}
-                </Pagination.Item>,
-              ]);
-            }
-            const ratings_ = [];
-            const recipesCount = response.data.recipes.length;
-            for (let i = 0; i < recipesCount; i++) {
-              const recipeRating =
-                Math.round(response.data.recipes[i].rating * 10) / 10;
-              ratings_.push([recipeRating + " "]);
-              let halfStar = true;
-              for (let j = 0; j < 5; j++) {
-                if (j < Math.floor(recipeRating)) {
-                  ratings_[i].push(
-                    <i
-                      key={`${i}${j}`}
-                      style={{ color: "#d54215" }}
-                      className="fa fa-star"
-                    />
-                  );
-                } else if (
-                  recipeRating - Math.floor(recipeRating) >= 0.3 &&
-                  recipeRating - Math.floor(recipeRating) <= 0.7 &&
-                  halfStar
-                ) {
-                  ratings_[i].push(
-                    <i
-                      key={`${i}${j}`}
-                      style={{ color: "#d54215" }}
-                      className="fas fa-star-half-alt"
-                    />
-                  );
-                  halfStar = false;
-                } else if (recipeRating) {
-                  ratings_[i].push(
-                    <i
-                      key={`${i}${j}`}
-                      style={{ color: "#d54215" }}
-                      className="far fa-star"
-                    />
-                  );
-                }
+
+          let friendsGroceries = " The groceries he/she has: ";
+
+          for (const grocery of response.data.newGroceries) {
+            setContainGroceries((containGroceries) => [
+              ...containGroceries,
+              grocery,
+            ]);
+
+            friendsGroceries += grocery.g_name + ", ";
+          }
+          setMessage(
+            response.data.newGroceries.length
+              ? response.data.message +
+                  friendsGroceries.slice(0, friendsGroceries.length - 2)
+              : response.data.message
+          );
+          setRecipes(response.data.recipes);
+          const pageCount = Math.ceil(response.data.recipesCount / 10);
+          setPagination([]);
+          for (let i = 1; i <= pageCount; i++) {
+            setPagination((pagination) => [
+              ...pagination,
+              <Pagination.Item
+                onClick={() => {
+                  window.scrollTo(0, 0);
+                  redirect.push(`/my_fridge/${i}`);
+                }}
+                key={i}
+                active={i === parseInt(page)}
+              >
+                {i}
+              </Pagination.Item>,
+            ]);
+          }
+          const ratings_ = [];
+          const recipesCount = response.data.recipes.length;
+          for (let i = 0; i < recipesCount; i++) {
+            const recipeRating =
+              Math.round(response.data.recipes[i].rating * 10) / 10;
+            ratings_.push([recipeRating + " "]);
+            let halfStar = true;
+            for (let j = 0; j < 5; j++) {
+              if (j < Math.floor(recipeRating)) {
+                ratings_[i].push(
+                  <i
+                    key={`${i}${j}`}
+                    style={{ color: "#d54215" }}
+                    className="fa fa-star"
+                  />
+                );
+              } else if (
+                recipeRating - Math.floor(recipeRating) >= 0.3 &&
+                recipeRating - Math.floor(recipeRating) <= 0.7 &&
+                halfStar
+              ) {
+                ratings_[i].push(
+                  <i
+                    key={`${i}${j}`}
+                    style={{ color: "#d54215" }}
+                    className="fas fa-star-half-alt"
+                  />
+                );
+                halfStar = false;
+              } else if (recipeRating) {
+                ratings_[i].push(
+                  <i
+                    key={`${i}${j}`}
+                    style={{ color: "#d54215" }}
+                    className="far fa-star"
+                  />
+                );
               }
             }
-            setRatings(ratings_);
           }
-          setLoading(false);
-        })
-        .catch((err) => {
-          setError(err.message);
-          setLoading(false);
-        });
-    }
+          setRatings(ratings_);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -132,31 +158,64 @@ export default function MyFridge({ pageTransitions }) {
   }, [loading]);
 
   useEffect(() => {
-    getRecipes();
     getGroceries();
   }, []);
 
   const getGroceries = () => {
-    if (ingredients) {
+    axios
+      .get("http://localhost:8080/recipes/r/r/r/get_groceries", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.data.err) {
+          setError(response.data.err);
+        } else {
+          if (response.data.newToken) {
+            localStorage.setItem("token", response.data.newToken);
+          }
+          setContainGroceries(response.data.containGroceries);
+          setNotContainGroceries(response.data.notContainGroceries);
+          if (response.data.groceries) {
+            getRecipes(page, response.data.groceries);
+          }
+        }
+      })
+      .catch((err) => {
+        setError(err.message);
+      });
+  };
+
+  const searchUsersData = (inputEmail) => {
+    if (inputEmail.length >= 3) {
+      setUsersDataLoading(true);
       axios
-        .get(`http://localhost:8080/recipes/r/r/get_groceries/${ingredients}`, {
+        .get(`http://localhost:8080/users/get_users_data/${inputEmail}`, {
           headers: {
             "x-access-token": localStorage.getItem("token"),
           },
         })
         .then((response) => {
           if (response.data.err) {
-            setError(response.data.err);
+            setUsersData(response.data.err);
           } else {
             if (response.data.newToken) {
               localStorage.setItem("token", response.data.newToken);
             }
-            setContainGroceries(response.data.containGroceries);
-            setNotContainGroceries(response.data.notContainGroceries);
+            setUsersData([]);
+            for (const userData of response.data.users) {
+              setUsersData((usersData) => [
+                ...usersData,
+                { label: userData.u_email },
+              ]);
+            }
           }
+          setUsersDataLoading(false);
         })
-        .catch((err) => {
-          setError(err.message);
+        .catch((error) => {
+          setUsersData(error.message);
+          setUsersDataLoading(false);
         });
     }
   };
@@ -172,13 +231,12 @@ export default function MyFridge({ pageTransitions }) {
       ingredients_ += "!" + notContainGrocery.g_id + "-";
     }
 
-    window.history.replaceState(
-      null,
-      "myFridge.com",
-      `/my_fridge/1/${ingredients_.slice(0, ingredients_.length - 1)}`
+    getRecipes(
+      1,
+      ingredients_.slice(0, ingredients_.length - 1)
+        ? ingredients_.slice(0, ingredients_.length - 1)
+        : 0
     );
-
-    getRecipes(1, ingredients_.slice(0, ingredients_.length - 1));
   };
 
   const imageSizes = () => {
@@ -281,6 +339,41 @@ export default function MyFridge({ pageTransitions }) {
     );
   };
 
+  const updateFridge = () => {
+    setFridgeUpdateLoading(true);
+    axios
+      .post(
+        "http://localhost:8080/recipes/update_fridge",
+        {
+          containGroceries,
+          notContainGroceries,
+        },
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        if (response.data.err) {
+          setFridgeUpdateMessage("");
+          setFridgeUpdateError(response.data.err);
+        } else {
+          if (response.data.newToken) {
+            localStorage.setItem("token", response.data.newToken);
+          }
+          setFridgeUpdateError("");
+          setFridgeUpdateMessage(response.data.message);
+        }
+        setFridgeUpdateLoading(false);
+      })
+      .catch((error) => {
+        setFridgeUpdateMessage("");
+        setFridgeUpdateError(error.message);
+        setFridgeUpdateLoading(false);
+      });
+  };
+
   return (
     <motion.div
       initial="out"
@@ -289,6 +382,42 @@ export default function MyFridge({ pageTransitions }) {
       variants={pageTransitions.pageVariants}
       transition={pageTransitions.pageTransition}
     >
+      <Modal
+        show={fridgeUpdateMessage || fridgeUpdateError}
+        onHide={() => {
+          setFridgeUpdateMessage("");
+          setFridgeUpdateError("");
+        }}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {fridgeUpdateError
+              ? "Error!"
+              : fridgeUpdateMessage
+              ? "Success!"
+              : null}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {fridgeUpdateError
+            ? fridgeUpdateError
+            : fridgeUpdateMessage
+            ? fridgeUpdateMessage
+            : null}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setFridgeUpdateMessage("");
+              setFridgeUpdateError("");
+            }}
+          >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal show={warningToastShow} onHide={() => setWarningToastShow(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Warning!</Modal.Title>
@@ -299,6 +428,18 @@ export default function MyFridge({ pageTransitions }) {
             variant="secondary"
             onClick={() => setWarningToastShow(false)}
           >
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={message} onHide={() => setMessage("")}>
+        <Modal.Header closeButton>
+          <Modal.Title>Warning!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{message}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setMessage("")}>
             OK
           </Button>
         </Modal.Footer>
@@ -410,11 +551,11 @@ export default function MyFridge({ pageTransitions }) {
         <div className="fridge">
           <div className="contain-container">
             {!containGroceries.length && !notContainGroceries.length && (
-              <label>Select at least 1 ingredient.</label>
+              <label>You have no groceries in the fridge.</label>
             )}
             {containGroceries.length ? (
               <>
-                <label>Include Groceries:</label>
+                <label>Groceries in your fridge:</label>
                 <TransitionGroup
                   className="groceries-list"
                   style={{ margin: "0" }}
@@ -464,7 +605,7 @@ export default function MyFridge({ pageTransitions }) {
           <div className="not-contain-container">
             {notContainGroceries.length ? (
               <>
-                <label>Not Include Groceries:</label>
+                <label>Groceries to not include in your recipes:</label>
                 <TransitionGroup
                   className="groceries-list"
                   style={{ margin: "0" }}
@@ -512,12 +653,57 @@ export default function MyFridge({ pageTransitions }) {
             ) : null}
           </div>
         </div>
+        <Form.Group
+          style={{
+            border: "1px solid #17a2b8",
+            padding: "10px",
+            borderRadius: "5px",
+            margin: "10px",
+          }}
+          controlId="formBasicEmail"
+        >
+          <Form.Label>Your friend's email:</Form.Label>
+          <Select
+            className="basic-single"
+            placeholder="Search for emails..."
+            classNamePrefix="select"
+            isLoading={usersDataLoading}
+            isClearable={true}
+            isSearchable={true}
+            options={usersData}
+            onInputChange={searchUsersData}
+            onChange={(selectedData) => {
+              selectedData ? setEmail(selectedData.label) : setEmail(0);
+              setUsersData([]);
+            }}
+          />
+          {/* <Form.Control
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
+            type="email"
+            placeholder="Enter email"
+          /> */}
+        </Form.Group>
         <Button
           onClick={searchRecipes}
           style={{ margin: "30px" }}
           variant="outline-info"
+          disabled={loading}
         >
-          Let's Go!
+          Search for recipes
+        </Button>
+        <Button
+          onClick={updateFridge}
+          style={{ margin: "30px" }}
+          variant="outline-success"
+          disabled={fridgeUpdateLoading}
+        >
+          {fridgeUpdateLoading ? (
+            <i className="fa fa-spinner fa-spin" />
+          ) : (
+            "Update fridge"
+          )}
         </Button>
       </div>
 
@@ -531,7 +717,7 @@ export default function MyFridge({ pageTransitions }) {
         <>
           {recipes.length ? (
             <>
-              <h3>Found recipes</h3>
+              <h3 style={{ margin: "30px" }}>Found recipes</h3>
               <CardDeck style={{ margin: "0", justifyContent: "center" }}>
                 {recipes &&
                   recipes.map((recipe, index) => {
@@ -626,16 +812,14 @@ export default function MyFridge({ pageTransitions }) {
                 <Pagination.First
                   onClick={() => {
                     window.scrollTo(0, 0);
-                    redirect.push(`/my_fridge/1/${ingredients}`);
+                    redirect.push("/my_fridge/1");
                   }}
                 />
                 <Pagination.Prev
                   onClick={() => {
                     if (parseInt(page) > 1) {
                       window.scrollTo(0, 0);
-                      redirect.push(
-                        `/my_fridge/${parseInt(page) - 1}/${ingredients}`
-                      );
+                      redirect.push(`/my_fridge/${parseInt(page) - 1}`);
                     }
                   }}
                 />
@@ -644,18 +828,14 @@ export default function MyFridge({ pageTransitions }) {
                   onClick={() => {
                     if (parseInt(page) < pagination.length) {
                       window.scrollTo(0, 0);
-                      redirect.push(
-                        `/my_fridge/${parseInt(page) + 1}/${ingredients}`
-                      );
+                      redirect.push(`/my_fridge/${parseInt(page) + 1}`);
                     }
                   }}
                 />
                 <Pagination.Last
                   onClick={() => {
                     window.scrollTo(0, 0);
-                    redirect.push(
-                      `/my_fridge/${pagination.length}/${ingredients}`
-                    );
+                    redirect.push(`/my_fridge/${pagination.length}`);
                   }}
                 />
               </Pagination>

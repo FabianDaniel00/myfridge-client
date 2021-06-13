@@ -109,7 +109,7 @@ const NavBar = () => {
                     window.scrollTo(0, 0);
                   }}
                   className="nav-link"
-                  to="/my_fridge"
+                  to="/my_fridge/1"
                 >
                   <i className="fas fa-utensils" /> My Fridge
                 </NavLink>
@@ -134,6 +134,17 @@ const NavBar = () => {
                   to="/weekly_menu"
                 >
                   <i className="fas fa-calendar-week" /> Weekly Menu
+                </NavLink>
+
+                <NavLink
+                  onClick={() => {
+                    setNavExpanded(false);
+                    window.scrollTo(0, 0);
+                  }}
+                  className="nav-link"
+                  to="/groceries_chart"
+                >
+                  <i className="fas fa-chart-bar" /> Groceries Chart
                 </NavLink>
 
                 {user.u_is_admin ? (

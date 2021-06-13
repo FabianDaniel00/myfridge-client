@@ -22,6 +22,7 @@ import ProfilePage from "./components/signedInComponents/ProfilePage.js";
 import FavoriteRecipes from "./components/signedInComponents/FavoriteRecipes.js";
 import Menu from "./components/signedInComponents/Menu.js";
 import Admin from "./components/admin/Admin.js";
+import DataChart from "./components/signedInComponents/DataChart.js";
 
 function App() {
   const [user, setUser] = useState("");
@@ -162,7 +163,7 @@ function App() {
                     )}
                   </Route>
 
-                  <Route path="/my_fridge/:page?/:ingredients?">
+                  <Route path="/my_fridge/:page">
                     {user ? (
                       <MyFridge pageTransitions={pageTransitions} />
                     ) : (
@@ -189,6 +190,14 @@ function App() {
                   <Route path="/weekly_menu">
                     {user ? (
                       <Menu pageTransitions={pageTransitions} />
+                    ) : (
+                      <Redirect to="/login" />
+                    )}
+                  </Route>
+
+                  <Route path="/groceries_chart">
+                    {user ? (
+                      <DataChart pageTransitions={pageTransitions} />
                     ) : (
                       <Redirect to="/login" />
                     )}
