@@ -71,7 +71,7 @@ export default function RecipePage({ pageTransitions }) {
 
   const getRecipe = () => {
     axios
-      .get(`http://localhost:8080/recipes/r/r/recipe/${r_id}`)
+      .get(`${process.env.REACT_APP_API_HOST}/recipes/r/r/recipe/${r_id}`)
       .then((response) => {
         if (response.data.err) {
           setError(response.data.err);
@@ -132,7 +132,7 @@ export default function RecipePage({ pageTransitions }) {
   const getRatingData = () => {
     setRatingDataLoading(true);
     axios
-      .get(`http://localhost:8080/recipes/r/r/rating_data/${r_id}`)
+      .get(`${process.env.REACT_APP_API_HOST}/recipes/r/r/rating_data/${r_id}`)
       .then((response) => {
         if (response.data.err) {
           setRatingDataError(response.data.err);
@@ -249,7 +249,7 @@ export default function RecipePage({ pageTransitions }) {
     const r_comment_id = uuidv4();
     axios
       .post(
-        "http://localhost:8080/recipes/add_comment",
+        `${process.env.REACT_APP_API_HOST}/recipes/add_comment`,
         {
           comment,
           r_comment_id,
@@ -291,7 +291,7 @@ export default function RecipePage({ pageTransitions }) {
     setDeleteCommentLoading(true);
     axios
       .put(
-        "http://localhost:8080/recipes/delete_comment",
+        `${process.env.REACT_APP_API_HOST}/recipes/delete_comment`,
         { r_comment_id: commentId },
         {
           headers: {
@@ -331,7 +331,7 @@ export default function RecipePage({ pageTransitions }) {
   const rateRecipe = (rating_by_user) => {
     axios
       .post(
-        "http://localhost:8080/recipes/rate_recipe",
+        `${process.env.REACT_APP_API_HOST}/recipes/rate_recipe`,
         {
           r_id,
           rating: rating_by_user,
@@ -366,7 +366,7 @@ export default function RecipePage({ pageTransitions }) {
   const addFavoriteRecipe = () => {
     axios
       .post(
-        "http://localhost:8080/recipes/favorite_recipes",
+        `${process.env.REACT_APP_API_HOST}/recipes/favorite_recipes`,
         {
           r_id,
         },
@@ -403,7 +403,7 @@ export default function RecipePage({ pageTransitions }) {
     setDeclineLoading(true);
     axios
       .post(
-        "http://localhost:8080/admin/decline_recipe",
+        `${process.env.REACT_APP_API_HOST}/admin/decline_recipe`,
         {
           r_id: recipe.data.r_id,
           r_name: recipe.data.r_name,
@@ -446,7 +446,7 @@ export default function RecipePage({ pageTransitions }) {
     setAcceptLoading(true);
     axios
       .post(
-        "http://localhost:8080/admin/accept_recipe",
+        `${process.env.REACT_APP_API_HOST}/admin/accept_recipe`,
         {
           r_id: recipe.data.r_id,
         },

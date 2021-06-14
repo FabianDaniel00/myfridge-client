@@ -47,7 +47,7 @@ export default function Admin({ pageTransitions }) {
   const getRecipesToAccept = () => {
     setRecipesToAcceptLoading(true);
     axios
-      .get("http://localhost:8080/admin/get_recipes_to_accept", {
+      .get(`${process.env.REACT_APP_API_HOST}/admin/get_recipes_to_accept`, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -72,7 +72,7 @@ export default function Admin({ pageTransitions }) {
   const getCommentsToAccept = () => {
     setCommentsToAcceptLoading(true);
     axios
-      .get("http://localhost:8080/admin/get_comments_to_accept", {
+      .get(`${process.env.REACT_APP_API_HOST}/admin/get_comments_to_accept`, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -97,7 +97,7 @@ export default function Admin({ pageTransitions }) {
   const getUsers = () => {
     setCommentsToAcceptLoading(true);
     axios
-      .get("http://localhost:8080/admin/get_users", {
+      .get(`${process.env.REACT_APP_API_HOST}/admin/get_users`, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -123,7 +123,7 @@ export default function Admin({ pageTransitions }) {
     setCommentDeclineLoading(true);
     axios
       .post(
-        "http://localhost:8080/admin/decline_comment",
+        `${process.env.REACT_APP_API_HOST}/admin/decline_comment`,
         {
           r_comment_id: commentsToAccept[commentSelectedIndex].r_comment_id,
           fName: commentsToAccept[commentSelectedIndex].u_f_name,
@@ -171,7 +171,7 @@ export default function Admin({ pageTransitions }) {
     setCommentAcceptLoading(true);
     axios
       .post(
-        "http://localhost:8080/admin/accept_comment",
+        `${process.env.REACT_APP_API_HOST}/admin/accept_comment`,
         {
           r_comment_id: commentsToAccept[commentSelectedIndex].r_comment_id,
         },
@@ -213,9 +213,12 @@ export default function Admin({ pageTransitions }) {
     setBlockLoading(true);
     axios
       .post(
-        "http://localhost:8080/admin/block_user",
+        `${process.env.REACT_APP_API_HOST}/admin/block_user`,
         {
           u_id: users[userSelectedIndex].u_id,
+          u_email: users[userSelectedIndex].u_email,
+          u_f_name: users[userSelectedIndex].u_f_name,
+          u_l_name: users[userSelectedIndex].u_l_name,
         },
         {
           headers: {
@@ -253,7 +256,7 @@ export default function Admin({ pageTransitions }) {
     setUnBlockLoading(true);
     axios
       .post(
-        "http://localhost:8080/admin/unblock_user",
+        `${process.env.REACT_APP_API_HOST}/admin/unblock_user`,
         {
           u_id: users[userSelectedIndex].u_id,
         },
@@ -293,7 +296,7 @@ export default function Admin({ pageTransitions }) {
     setUserDeleteLoading(true);
     axios
       .post(
-        "http://localhost:8080/admin/delete_user",
+        `${process.env.REACT_APP_API_HOST}/admin/delete_user`,
         {
           u_id: users[userSelectedIndex].u_id,
         },

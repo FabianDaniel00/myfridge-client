@@ -21,7 +21,7 @@ export default function Menu({ pageTransitions }) {
 
   const getRecipes = () => {
     axios
-      .get("http://localhost:8080/recipes/r/r/r/get_menu", {
+      .get(`${process.env.REACT_APP_API_HOST}/recipes/r/r/r/get_menu`, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -48,7 +48,7 @@ export default function Menu({ pageTransitions }) {
       setRemoveLoading(true);
       axios
         .post(
-          "http://localhost:8080/recipes/remove_from_weekly_menu",
+          `${process.env.REACT_APP_API_HOST}/recipes/remove_from_weekly_menu`,
           {
             r_id,
             day,

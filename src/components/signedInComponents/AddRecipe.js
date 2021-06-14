@@ -38,7 +38,9 @@ export default function AddRecipe({ pageTransitions }) {
 
   const getRecipeCategories = () => {
     axios
-      .get("http://localhost:8080/recipes/r/r/get/recipes_categories")
+      .get(
+        `${process.env.REACT_APP_API_HOST}/recipes/r/r/get/recipes_categories`
+      )
       .then((response) => {
         if (response.data.err) {
           setRecipeCategoriesError(response.data.err);
@@ -56,11 +58,14 @@ export default function AddRecipe({ pageTransitions }) {
     if (input.length > 1) {
       setGroceriesLoading(true);
       axios
-        .get(`http://localhost:8080/recipes/r/r/search_groceries/${input}`, {
-          headers: {
-            "x-access-token": localStorage.getItem("token"),
-          },
-        })
+        .get(
+          `${process.env.REACT_APP_API_HOST}/recipes/r/r/search_groceries/${input}`,
+          {
+            headers: {
+              "x-access-token": localStorage.getItem("token"),
+            },
+          }
+        )
         .then((response) => {
           if (response.data.err) {
             setGroceriesError(response.data.err);
@@ -194,7 +199,7 @@ export default function AddRecipe({ pageTransitions }) {
 
       axios
         .post(
-          "http://localhost:8080/recipes/add_recipe",
+          `${process.env.REACT_APP_API_HOST}/recipes/add_recipe`,
           {
             r_id,
             r_name: recipeName,

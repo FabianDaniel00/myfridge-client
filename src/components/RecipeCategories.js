@@ -12,7 +12,9 @@ export default function RecipeCategories({ pageTransitions }) {
 
   const getRecipeCategories = () => {
     axios
-      .get("http://localhost:8080/recipes/r/r/get/recipes_categories")
+      .get(
+        `${process.env.REACT_APP_API_HOST}/recipes/r/r/get/recipes_categories`
+      )
       .then((response) => {
         if (response.data.err) {
           setRecipeCategoriesError(response.data.err);

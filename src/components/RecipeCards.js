@@ -30,7 +30,9 @@ export default function RecipeCards() {
   const getRecipes = () => {
     setLoading(true);
     axios
-      .get(`http://localhost:8080/recipes/${category}/${page}/${search}`)
+      .get(
+        `${process.env.REACT_APP_API_HOST}/recipes/${category}/${page}/${search}`
+      )
       .then((response) => {
         if (response.data.err) {
           setError(response.data.err);

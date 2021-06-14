@@ -62,7 +62,7 @@ export default function ProfilePage({ pageTransitions }) {
 
   const getUsersRecipes = () => {
     axios
-      .get("http://localhost:8080/users/get_users_recipes", {
+      .get(`${process.env.REACT_APP_API_HOST}/users/get_users_recipes`, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -145,7 +145,7 @@ export default function ProfilePage({ pageTransitions }) {
     setFNameLoading(true);
     axios
       .post(
-        "http://localhost:8080/users/edit_f_name",
+        `${process.env.REACT_APP_API_HOST}/users/edit_f_name`,
         {
           fName,
         },
@@ -183,7 +183,7 @@ export default function ProfilePage({ pageTransitions }) {
     setLNameLoading(true);
     axios
       .post(
-        "http://localhost:8080/users/edit_l_name",
+        `${process.env.REACT_APP_API_HOST}/users/edit_l_name`,
         {
           lName,
         },
@@ -221,7 +221,7 @@ export default function ProfilePage({ pageTransitions }) {
     setEmailLoading(true);
     axios
       .post(
-        "http://localhost:8080/users/edit_email",
+        `${process.env.REACT_APP_API_HOST}/users/edit_email`,
         {
           email,
           emailPassword,
@@ -260,7 +260,7 @@ export default function ProfilePage({ pageTransitions }) {
     setTelLoading(true);
     axios
       .post(
-        "http://localhost:8080/users/edit_tel",
+        `${process.env.REACT_APP_API_HOST}/users/edit_tel`,
         {
           tel,
         },
@@ -301,7 +301,7 @@ export default function ProfilePage({ pageTransitions }) {
     } else {
       axios
         .post(
-          "http://localhost:8080/users/edit_password",
+          `${process.env.REACT_APP_API_HOST}/users/edit_password`,
           {
             password,
             newPassword,

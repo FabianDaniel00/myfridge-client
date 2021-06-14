@@ -23,7 +23,7 @@ export default function Logout({ navbar }) {
   const logout = () => {
     setLoading(true);
     axios
-      .post("http://localhost:8080/users/logout")
+      .post(`${process.env.REACT_APP_API_HOST}/users/logout`)
       .then((response) => {
         if (response.data.err) {
           setError(response.data.err);

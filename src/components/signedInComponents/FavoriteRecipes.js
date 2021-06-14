@@ -37,11 +37,14 @@ export default function FavoriteRecipes({ pageTransitions }) {
 
   const getFavoriteRecipes = () => {
     axios
-      .get("http://localhost:8080/recipes/r/r/r/get_favorite_recipes", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
+      .get(
+        `${process.env.REACT_APP_API_HOST}/recipes/r/r/r/get_favorite_recipes`,
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
       .then((response) => {
         if (response.data.err) {
           setFavoriteRecipesError(response.data.err);
@@ -113,7 +116,7 @@ export default function FavoriteRecipes({ pageTransitions }) {
       setAddFavoritesLoading(true);
       axios
         .post(
-          "http://localhost:8080/recipes/favorite_recipes",
+          `${process.env.REACT_APP_API_HOST}/recipes/favorite_recipes`,
           {
             r_id,
           },
@@ -160,7 +163,7 @@ export default function FavoriteRecipes({ pageTransitions }) {
     setAddToWeeklyLoading(true);
     axios
       .post(
-        "http://localhost:8080/recipes/add_to_weekly_menu",
+        `${process.env.REACT_APP_API_HOST}/recipes/add_to_weekly_menu`,
         {
           day: selectedDay,
           r_id: selectedRecipeId,

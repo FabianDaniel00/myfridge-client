@@ -15,11 +15,14 @@ export default function DataChart({ pageTransitions }) {
 
   const getChartData = () => {
     axios
-      .get("http://localhost:8080/recipes/r/r/r/get_data_for_chart", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
+      .get(
+        `${process.env.REACT_APP_API_HOST}/recipes/r/r/r/get_data_for_chart`,
+        {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        }
+      )
       .then((response) => {
         if (response.data.err) {
           setErrorChartData(response.data.err);

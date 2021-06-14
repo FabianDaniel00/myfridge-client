@@ -52,9 +52,9 @@ export default function MyFridge({ pageTransitions }) {
     setLoading(true);
     axios
       .get(
-        `http://localhost:8080/recipes/r/r/my_fridge/${page}/${ingredients}/${
-          !email ? 0 : email
-        }`,
+        `${
+          process.env.REACT_APP_API_HOST
+        }/recipes/r/r/my_fridge/${page}/${ingredients}/${!email ? 0 : email}`,
         {
           headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -163,7 +163,7 @@ export default function MyFridge({ pageTransitions }) {
 
   const getGroceries = () => {
     axios
-      .get("http://localhost:8080/recipes/r/r/r/get_groceries", {
+      .get(`${process.env.REACT_APP_API_HOST}/recipes/r/r/r/get_groceries`, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -191,11 +191,14 @@ export default function MyFridge({ pageTransitions }) {
     if (inputEmail.length >= 3) {
       setUsersDataLoading(true);
       axios
-        .get(`http://localhost:8080/users/get_users_data/${inputEmail}`, {
-          headers: {
-            "x-access-token": localStorage.getItem("token"),
-          },
-        })
+        .get(
+          `${process.env.REACT_APP_API_HOST}/users/get_users_data/${inputEmail}`,
+          {
+            headers: {
+              "x-access-token": localStorage.getItem("token"),
+            },
+          }
+        )
         .then((response) => {
           if (response.data.err) {
             setUsersData(response.data.err);
@@ -255,11 +258,14 @@ export default function MyFridge({ pageTransitions }) {
     if (input.length > 1) {
       setGroceriesLoading(true);
       axios
-        .get(`http://localhost:8080/recipes/r/r/search_groceries/${input}`, {
-          headers: {
-            "x-access-token": localStorage.getItem("token"),
-          },
-        })
+        .get(
+          `${process.env.REACT_APP_API_HOST}/recipes/r/r/search_groceries/${input}`,
+          {
+            headers: {
+              "x-access-token": localStorage.getItem("token"),
+            },
+          }
+        )
         .then((response) => {
           if (response.data.err) {
             setGroceriesError(response.data.err);
@@ -343,7 +349,7 @@ export default function MyFridge({ pageTransitions }) {
     setFridgeUpdateLoading(true);
     axios
       .post(
-        "http://localhost:8080/recipes/update_fridge",
+        `${process.env.REACT_APP_API_HOST}/recipes/update_fridge`,
         {
           containGroceries,
           notContainGroceries,
