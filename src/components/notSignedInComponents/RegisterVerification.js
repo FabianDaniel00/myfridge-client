@@ -18,7 +18,7 @@ export default function RegisterVerification({ pageTransitions }) {
 
     setLoading(true);
     axios
-      .post("http://localhost:8080/users/register_verification", {
+      .post(`${process.env.REACT_APP_API_HOST}/users/register_verification`, {
         email,
         verificationCode,
       })

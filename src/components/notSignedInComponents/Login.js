@@ -27,7 +27,10 @@ function Login({ pageTransitions }) {
     event.preventDefault();
     setLoading(true);
     axios
-      .post("http://localhost:8080/users/login", { email, password })
+      .post(`${process.env.REACT_APP_API_HOST}/users/login`, {
+        email,
+        password,
+      })
       .then((response) => {
         if (response.data.err) {
           setError(response.data.err);

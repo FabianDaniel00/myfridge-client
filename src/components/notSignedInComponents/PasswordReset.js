@@ -22,7 +22,9 @@ export default function PasswordReset({ pageTransitions }) {
 
     setSendLoading(true);
     axios
-      .post("http://localhost:8080/users/reset_password_send", { email })
+      .post(`${process.env.REACT_APP_API_HOST}/users/reset_password_send`, {
+        email,
+      })
       .then((response) => {
         if (response.data.err) {
           setSendMessage("");
@@ -47,11 +49,14 @@ export default function PasswordReset({ pageTransitions }) {
 
     if (newPassword === newPasswordConfirm) {
       axios
-        .post("http://localhost:8080/users/reset_password_confirm", {
-          verificationCode,
-          email,
-          newPassword,
-        })
+        .post(
+          `${process.env.REACT_APP_API_HOST}/users/reset_password_confirm`,
+          {
+            verificationCode,
+            email,
+            newPassword,
+          }
+        )
         .then((response) => {
           if (response.data.err) {
             setConfirmMessage("");

@@ -17,7 +17,7 @@ export default function AgainRegisterVerification({ pageTransitions }) {
 
     setLoading(true);
     axios
-      .post("http://localhost:8080/users/send_code_again", { email, password })
+      .post(`${process.env.REACT_APP_API_HOST}/users/send_code_again`, { email, password })
       .then((response) => {
         if (response.data.err) {
           setMessage("");

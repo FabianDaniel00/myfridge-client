@@ -33,7 +33,7 @@ function Register({ pageTransitions }) {
       setLoading(false);
     } else {
       axios
-        .post("http://localhost:8080/users/register", {
+        .post(`${process.env.REACT_APP_API_HOST}/users/register`, {
           fName,
           lName,
           email,
