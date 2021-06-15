@@ -38,7 +38,7 @@ function App() {
 
   const userIsLoggedIn = () => {
     axios
-      .get("http://localhost:8080/users/auth")
+      .get(`${process.env.REACT_APP_API_HOST}/users/auth`)
       .then((response) => {
         if (response.data.err) {
           setError(response.data.err);
