@@ -151,7 +151,7 @@ function Register({ pageTransitions }) {
     </Form.Group> */}
 
         <ReCAPTCHA
-          sitekey="6Ld9SaAaAAAAAKOhg8KY3Ab93WEEInu6f8h0VSTR"
+          sitekey="6LeVazQbAAAAAHtNjBk99AqPBUhCwC1T5tmwVJe3"
           size="invisible"
           ref={reRef}
           badge="inline"
