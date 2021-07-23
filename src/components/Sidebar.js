@@ -168,7 +168,7 @@ const Sidebar = () => {
 
                 <NavLink
                   exact
-                  to="/favorite_recipes"
+                  to="/favorite_recipes/all"
                   activeClassName="activeClicked"
                   onClick={window.scrollTo(0, 0)}
                 >

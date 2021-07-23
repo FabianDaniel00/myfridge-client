@@ -441,7 +441,7 @@ export default function MyFridge({ pageTransitions }) {
 
       <Modal show={message} onHide={() => setMessage("")}>
         <Modal.Header closeButton>
-          <Modal.Title>Warning!</Modal.Title>
+          <Modal.Title>Info!</Modal.Title>
         </Modal.Header>
         <Modal.Body>{message}</Modal.Body>
         <Modal.Footer>

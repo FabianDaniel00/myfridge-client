@@ -10,3 +10,18 @@
 .link-to-recipe {
   transition: 0.3s;
 }
+
+.table-responsive {
+  max-height: 833px;
+  overflow: auto;
+}
+
+table {
+  margin-bottom: 5px;
+}
+
+thead {
+  text-decoration: underline;
+  position: sticky;
+  top: 0;
+}

@@ -120,7 +120,7 @@ const NavBar = () => {
                     window.scrollTo(0, 0);
                   }}
                   className="nav-link"
-                  to="/favorite_recipes"
+                  to="/favorite_recipes/all"
                 >
                   <i className="fas fa-heart" /> Favorite Recipes
                 </NavLink>

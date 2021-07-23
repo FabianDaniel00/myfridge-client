@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button, Alert, Toast, Collapse } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { useHistory, Link } from "react-router-dom";
@@ -10,6 +10,10 @@ export default function RegisterVerification({ pageTransitions }) {
   const [verificationCode, setVerificationCode] = useState("");
   const [loading, setLoading] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const redirect = useHistory();
 

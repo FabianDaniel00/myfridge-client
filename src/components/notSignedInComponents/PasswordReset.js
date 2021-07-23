@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button, Alert, Collapse, Toast } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -16,6 +16,10 @@ export default function PasswordReset({ pageTransitions }) {
   const [confirmLoading, setConfirmLoading] = useState("");
   const [confirmError, setConfirmError] = useState("");
   const [confirmMessage, setConfirmMessage] = useState("");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const sendCode = (event) => {
     event.preventDefault();

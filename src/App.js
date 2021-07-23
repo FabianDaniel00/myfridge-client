@@ -80,7 +80,7 @@ function App() {
       <CarouselComponent />
       {loading ? (
         <h1 style={{ margin: "20px", textAlign: "center" }}>
-          <i className="fa fa-spinner fa-spin" />
+          <i className="fa fa-spinner fa-spin" /> checking authorization...
         </h1>
       ) : error ? (
         <h4 style={{ margin: "20px", textAlign: "center" }}>{error}</h4>
@@ -171,6 +171,10 @@ function App() {
                     )}
                   </Route>
 
+                  <Route path="/my_fridge">
+                    <Redirect to="/my_fridge/1" />
+                  </Route>
+
                   <Route path="/profile_page">
                     {user ? (
                       <ProfilePage pageTransitions={pageTransitions} />
@@ -179,12 +183,16 @@ function App() {
                     )}
                   </Route>
 
-                  <Route path="/favorite_recipes">
+                  <Route path="/favorite_recipes/:search">
                     {user ? (
                       <FavoriteRecipes pageTransitions={pageTransitions} />
                     ) : (
                       <Redirect to="/login" />
                     )}
+                  </Route>
+
+                  <Route path="/favorite_recipes">
+                    <Redirect to="/favorite_recipes/all" />
                   </Route>
 
                   <Route path="/weekly_menu">

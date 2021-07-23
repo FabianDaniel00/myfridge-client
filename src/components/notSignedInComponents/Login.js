@@ -23,6 +23,10 @@ function Login({ pageTransitions }) {
     };
   });
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const login = (event) => {
     event.preventDefault();
     setLoading(true);

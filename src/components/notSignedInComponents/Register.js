@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../../style/Form.scss";
 import axios from "axios";
 import { Form, Button, Alert, Toast, Collapse } from "react-bootstrap";
@@ -16,6 +16,10 @@ function Register({ pageTransitions }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const reRef = useRef();
 

@@ -127,7 +127,7 @@ export default function RecipeCards() {
     <>
       {loading ? (
         <h3 style={{ margin: "20px", textAlign: "center" }}>
-          <i className="fa fa-spinner fa-spin" />
+          <i className="fa fa-spinner fa-spin" /> loading recipes...
         </h3>
       ) : error ? (
         <h4 style={{ margin: "20px", textAlign: "center" }}>{error}</h4>

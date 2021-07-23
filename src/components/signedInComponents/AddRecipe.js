@@ -508,11 +508,11 @@ export default function AddRecipe({ pageTransitions }) {
             </Form.Control>
           </Form.Group>
 
-          <Form.File id="recipe-picture">
+          <Form.File>
             <Form.File.Label style={{ fontSize: "13px" }}>
               Upload image for recipe{" "}
               <i style={{ color: "#a1a1a1" }}>
-                (optional max 4 MB recommended 286x100)
+                (optional, max 4 MB, recommended 286x100)
               </i>
             </Form.File.Label>
             <Form.File.Input

@@ -10,8 +10,9 @@ import {
   Toast,
   Alert,
   Card,
+  InputGroup,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 import "../../style/FavoriteRecipes.scss";
 import defaultRecipe from "../../img/recipe_default.png";
@@ -31,14 +32,25 @@ export default function FavoriteRecipes({ pageTransitions }) {
   const [addToWeeklyError, setAddToWeeklyError] = useState("");
   const [addToWeeklyMessage, setAddToWeeklyMessage] = useState("");
 
+  const { search } = useParams();
+
+  const [searchInput, setSearchInput] = useState(
+    search === "all" ? "" : search
+  );
+
+  const redirect = useHistory();
+
   useEffect(() => {
     getFavoriteRecipes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getFavoriteRecipes = () => {
     axios
       .get(
-        `${process.env.REACT_APP_API_HOST}/recipes/r/r/r/get_favorite_recipes`,
+        `${process.env.REACT_APP_API_HOST}/recipes/r/r/r/get_favorite_recipes/${
+          search ? search : `all`
+        }`,
         {
           headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -377,6 +389,24 @@ export default function FavoriteRecipes({ pageTransitions }) {
       <div className="favorite-recipes">
         <h4 style={{ marginLeft: "20px" }}>Your favorite recipes</h4>
         <br />
+        <InputGroup size="sm" style={{ width: "300px", margin: "5px auto" }}>
+          <Form.Control
+            placeholder="Search in favorite recipes..."
+            aria-label="Search"
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+          />
+          <InputGroup.Append>
+            <Button
+              variant="outline-info"
+              onClick={() => redirect.push(`/favorite_recipes/${searchInput}`)}
+              disabled={favoriteRecipesLoading}
+            >
+              Search
+            </Button>
+          </InputGroup.Append>
+        </InputGroup>
+        <br />
         <Table hover responsive size="sm">
           <thead>
             <tr>
@@ -419,7 +449,7 @@ export default function FavoriteRecipes({ pageTransitions }) {
                         {index + 1}.
                       </Link>
                     </td>
-                    <td>
+                    <td style={{ textAlign: "center" }}>
                       <Link to={`/recipe/${favoriteRecipe.recipe_id}`}>
                         <Image
                           src={
@@ -505,7 +535,9 @@ export default function FavoriteRecipes({ pageTransitions }) {
                     transition: "0.3s",
                   }}
                 >
-                  You have no added favorite recipes.
+                  {search === "all"
+                    ? "You have no added favorite recipes."
+                    : "Not found recipes."}
                 </td>
               </tr>
             )}

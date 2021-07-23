@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button, Toast, Alert, Collapse } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -12,12 +12,19 @@ export default function AgainRegisterVerification({ pageTransitions }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const againRegisterVerification = (event) => {
     event.preventDefault();
 
     setLoading(true);
     axios
-      .post(`${process.env.REACT_APP_API_HOST}/users/send_code_again`, { email, password })
+      .post(`${process.env.REACT_APP_API_HOST}/users/send_code_again`, {
+        email,
+        password,
+      })
       .then((response) => {
         if (response.data.err) {
           setMessage("");
